@@ -1,0 +1,61 @@
+﻿<phone:PhoneApplicationPage 
+    x:Class="GpsEmulatorPhoneTestClient.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="696"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    shell:SystemTray.IsVisible="True">
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel contains the name of the application and page title-->
+        <StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
+            <TextBlock x:Name="ApplicationTitle" Text="GPS Emulator Test Client" Style="{StaticResource PhoneTextNormalStyle}"/>
+            <TextBlock x:Name="PageTitle" Text="My Location" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+        </StackPanel>
+
+        <!--ContentPanel - place additional content here-->
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeLarge}">Time Acquired</TextBlock>
+            <TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}" x:Name="tbTimeAcquired">Undefined</TextBlock>
+            <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeLarge}">Latitude</TextBlock>
+            <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}" x:Name="tbLatitude">Undefined</TextBlock>
+            <TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeLarge}">Longtitude</TextBlock>
+            <TextBlock Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}" x:Name="tbLongtitude">Undefined</TextBlock>
+            <TextBlock Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeLarge}">Device Status</TextBlock>
+            <TextBlock Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" FontSize="{StaticResource PhoneFontSizeMedium}" x:Name="tbDeviceStatus">Undefined</TextBlock>
+        </Grid>
+    </Grid>
+ 
+    <!--Sample code showing usage of ApplicationBar-->
+    <phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
+            <shell:ApplicationBarIconButton x:Name="btnStart" IconUri="/Images/GpsOn.png" Text="Start" Click="btnStart_Click"/>
+            <shell:ApplicationBarIconButton x:Name="btnStop" IconUri="/Images/appbar_button2.png" Text="Stop" Click="btnStop_Click"/>
+            <shell:ApplicationBarIconButton x:Name="btnTicks" IconUri="/Images/appbar_button2.png" Text="Ticks" Click="btnTicks_Click"/>
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
+
+</phone:PhoneApplicationPage>

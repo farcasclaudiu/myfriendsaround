@@ -1,0 +1,24 @@
+﻿@using GoogleMaps.Models
+@{
+    ViewBag.Title = "My Friends Around - Home Page";
+}
+<div>
+    <h2>@ViewBag.Message</h2>
+</div>
+<p>
+    @Html.Raw(Html.DrawMap("ABQIAAAAksAhKXCpVW3aANz3gzuv4xT2yXp_ZAY8_ufC3CFXhHIE1NvwkxRJW_HFuarMuHR-nqN1g7x09OKIPQ", "/Home/GetMarkers?timestamp=" + DateTime.Now.Ticks.ToString(), "1000", "500"))
+    <script type="text/javascript">
+        function getTimeFromserver() {
+            var now = new Date();
+            $.ajax({
+                url: '/Home/GetMarkers',
+                success: function (html) {
+                    processmarkers(html);
+                }
+            });
+        }
+        $(document).ready(function () {
+            setInterval('getTimeFromserver();', 3000);
+        });    
+    </script>
+</p>
