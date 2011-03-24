@@ -11,6 +11,8 @@ using System.Windows.Shapes;
 using Microsoft.Silverlight.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+#if TESTING
+
 namespace MyFriendsAround.WP7.Tests
 {
     [TestClass]
@@ -30,3 +32,5 @@ namespace MyFriendsAround.WP7.Tests
         }
     }
 }
+
+#endif

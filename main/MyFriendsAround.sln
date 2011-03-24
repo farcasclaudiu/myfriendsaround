@@ -26,6 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GpsEmulatorClient", "Libs\G
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GpsEmulatorPhoneTestClient", "Libs\GpsEmulator\GpsEmulatorPhoneTestClient\GpsEmulatorPhoneTestClient.csproj", "{BF7316A8-A2C5-4176-8D7F-672AD12F474D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phone7.Fx.Preview", "Libs\Phone7.Fx.Preview\Phone7.Fx.Preview.csproj", "{B55A0F90-2B5A-4C4B-88F4-013AA1629866}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -205,6 +207,21 @@ Global
 		{BF7316A8-A2C5-4176-8D7F-672AD12F474D}.Tests|Mixed Platforms.Build.0 = Tests|Any CPU
 		{BF7316A8-A2C5-4176-8D7F-672AD12F474D}.Tests|Mixed Platforms.Deploy.0 = Tests|Any CPU
 		{BF7316A8-A2C5-4176-8D7F-672AD12F474D}.Tests|x86.ActiveCfg = Tests|Any CPU
+		{B55A0F90-2B5A-4C4B-88F4-013AA1629866}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B55A0F90-2B5A-4C4B-88F4-013AA1629866}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B55A0F90-2B5A-4C4B-88F4-013AA1629866}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{B55A0F90-2B5A-4C4B-88F4-013AA1629866}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{B55A0F90-2B5A-4C4B-88F4-013AA1629866}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B55A0F90-2B5A-4C4B-88F4-013AA1629866}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B55A0F90-2B5A-4C4B-88F4-013AA1629866}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B55A0F90-2B5A-4C4B-88F4-013AA1629866}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B55A0F90-2B5A-4C4B-88F4-013AA1629866}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{B55A0F90-2B5A-4C4B-88F4-013AA1629866}.Release|x86.ActiveCfg = Release|Any CPU
+		{B55A0F90-2B5A-4C4B-88F4-013AA1629866}.Tests|Any CPU.ActiveCfg = Release|Any CPU
+		{B55A0F90-2B5A-4C4B-88F4-013AA1629866}.Tests|Any CPU.Build.0 = Release|Any CPU
+		{B55A0F90-2B5A-4C4B-88F4-013AA1629866}.Tests|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{B55A0F90-2B5A-4C4B-88F4-013AA1629866}.Tests|Mixed Platforms.Build.0 = Release|Any CPU
+		{B55A0F90-2B5A-4C4B-88F4-013AA1629866}.Tests|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -213,5 +230,6 @@ Global
 		{566AEE14-134C-4EE4-93B5-1FFB021DE678} = {340549A1-45EA-4B49-B194-347C0078BAD8}
 		{A128812A-1249-4562-BDF4-5E17951B8434} = {340549A1-45EA-4B49-B194-347C0078BAD8}
 		{BF7316A8-A2C5-4176-8D7F-672AD12F474D} = {340549A1-45EA-4B49-B194-347C0078BAD8}
+		{B55A0F90-2B5A-4C4B-88F4-013AA1629866} = {340549A1-45EA-4B49-B194-347C0078BAD8}
 	EndGlobalSection
 EndGlobal
