@@ -39,7 +39,7 @@ namespace MyFriendsAround.WP7.ViewModel
         {
             get
             {
-                return "MVVM LIGHT";
+                return "MyFriendsAround";
             }
         }
 
@@ -47,8 +47,7 @@ namespace MyFriendsAround.WP7.ViewModel
         {
             get
             {
-                //myfriendsservice 
-                return "My page:";
+                return "Friends Map";
             }
         }
 
@@ -67,6 +66,9 @@ namespace MyFriendsAround.WP7.ViewModel
         {
             MyName = "Guest";
             PublishLocationCommand = new RelayCommand(() => PublishLocationAction());
+            DisplayAboutCommand = new RelayCommand(() => DisplayAbout());
+            InputBoxCommand = new RelayCommand(() => InputBox());
+
             if (IsInDesignMode)
             {
                 // Code runs in Blend --> create design time data.
@@ -74,10 +76,23 @@ namespace MyFriendsAround.WP7.ViewModel
             else
             {
                 // Code runs "for real"
+                IsBusy = true;
                 ServiceAgent.GetFriends(this.GetFriendsResult);
             }
 
         }
+
+        private void InputBox()
+        {
+            MessageBox.Show("Input box");
+        }
+
+
+        private void DisplayAbout()
+        {
+            MessageBox.Show("About");
+        }
+
 
         private void PopulatePushPins(List<Friend> list)
         {
@@ -92,7 +107,6 @@ namespace MyFriendsAround.WP7.ViewModel
                                                   });
                              });            
             PushPins = result;
-
         }
 
 
@@ -103,6 +117,7 @@ namespace MyFriendsAround.WP7.ViewModel
             myInfo.FriendName = MyName;
             myInfo.LastUpdated = DateTime.UtcNow;
             myInfo.LocationStr = string.Format("POINT({0} {1})", MapCenter.Latitude, MapCenter.Longitude);
+            IsBusy = true;
             ServiceAgent.PublishLocation(myInfo, new EventHandler<PublishLocationEventArgs>(PublishLocationResult));
         }
 
@@ -112,6 +127,7 @@ namespace MyFriendsAround.WP7.ViewModel
             DispatcherHelper.CheckBeginInvokeOnUI(() =>
                                                       {
                                                           PopulatePushPins(list);
+                                                          IsBusy = false;
                                                       }
                 );
         }
@@ -146,7 +162,19 @@ namespace MyFriendsAround.WP7.ViewModel
         }
 
         public RelayCommand PublishLocationCommand { get; set; }
+        public RelayCommand DisplayAboutCommand { get; set; }
+        public RelayCommand InputBoxCommand { get; set; }
+        
         public string MyName { get; set; }
+
+        public string AppBarTextAbout {
+            get { return "About"; }
+        }
+
+        public string AppBarTextPublish
+        {
+            get { return "Publish"; }
+        }
 
         ////public override void Cleanup()
         ////{
@@ -222,6 +250,39 @@ namespace MyFriendsAround.WP7.ViewModel
                 RaisePropertyChanged(MapCenterPropertyName);
                 //// Update bindings and broadcast change using GalaSoft.MvvmLight.Messenging
                 //RaisePropertyChanged(MapCenterPropertyName, oldValue, value, true);
+            }
+        }
+
+
+        /// <summary>
+        /// The <see cref="IsBusy" /> property's name.
+        /// </summary>
+        public const string IsBusyPropertyName = "IsBusy";
+
+        private bool _isBusy = false;
+
+        /// <summary>
+        /// Gets the IsBusy property.
+        /// </summary>
+        public bool IsBusy
+        {
+            get
+            {
+                return _isBusy;
+            }
+
+            set
+            {
+                if (_isBusy == value)
+                {
+                    return;
+                }
+
+                var oldValue = _isBusy;
+                _isBusy = value;
+
+                // Update bindings, no broadcast
+                RaisePropertyChanged(IsBusyPropertyName);
             }
         }
     }
