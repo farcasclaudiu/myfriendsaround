@@ -3,7 +3,3 @@ syntax: glob
 */bin/*
 *.user
 */obj/*
-*_ReSharper*
-*/Bin/*
-*/sql/debug/*
-*.dbmdl
