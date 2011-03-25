@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GpsEmulatorPhoneTestClient"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phone7.Fx.Preview", "Libs\Phone7.Fx.Preview\Phone7.Fx.Preview.csproj", "{B55A0F90-2B5A-4C4B-88F4-013AA1629866}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroIoc.Core", "Libs\MicroIoc\MicroIoc.Core\MicroIoc.Core.csproj", "{23F63AE9-A436-4B27-9113-4142C09ADD08}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -222,6 +224,21 @@ Global
 		{B55A0F90-2B5A-4C4B-88F4-013AA1629866}.Tests|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{B55A0F90-2B5A-4C4B-88F4-013AA1629866}.Tests|Mixed Platforms.Build.0 = Release|Any CPU
 		{B55A0F90-2B5A-4C4B-88F4-013AA1629866}.Tests|x86.ActiveCfg = Release|Any CPU
+		{23F63AE9-A436-4B27-9113-4142C09ADD08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23F63AE9-A436-4B27-9113-4142C09ADD08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23F63AE9-A436-4B27-9113-4142C09ADD08}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{23F63AE9-A436-4B27-9113-4142C09ADD08}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{23F63AE9-A436-4B27-9113-4142C09ADD08}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{23F63AE9-A436-4B27-9113-4142C09ADD08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23F63AE9-A436-4B27-9113-4142C09ADD08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{23F63AE9-A436-4B27-9113-4142C09ADD08}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{23F63AE9-A436-4B27-9113-4142C09ADD08}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{23F63AE9-A436-4B27-9113-4142C09ADD08}.Release|x86.ActiveCfg = Release|Any CPU
+		{23F63AE9-A436-4B27-9113-4142C09ADD08}.Tests|Any CPU.ActiveCfg = Release|Any CPU
+		{23F63AE9-A436-4B27-9113-4142C09ADD08}.Tests|Any CPU.Build.0 = Release|Any CPU
+		{23F63AE9-A436-4B27-9113-4142C09ADD08}.Tests|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{23F63AE9-A436-4B27-9113-4142C09ADD08}.Tests|Mixed Platforms.Build.0 = Release|Any CPU
+		{23F63AE9-A436-4B27-9113-4142C09ADD08}.Tests|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -231,5 +248,6 @@ Global
 		{A128812A-1249-4562-BDF4-5E17951B8434} = {340549A1-45EA-4B49-B194-347C0078BAD8}
 		{BF7316A8-A2C5-4176-8D7F-672AD12F474D} = {340549A1-45EA-4B49-B194-347C0078BAD8}
 		{B55A0F90-2B5A-4C4B-88F4-013AA1629866} = {340549A1-45EA-4B49-B194-347C0078BAD8}
+		{23F63AE9-A436-4B27-9113-4142C09ADD08} = {340549A1-45EA-4B49-B194-347C0078BAD8}
 	EndGlobalSection
 EndGlobal

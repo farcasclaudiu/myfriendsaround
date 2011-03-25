@@ -51,14 +51,6 @@ namespace MyFriendsAround.WP7.ViewModel
             }
         }
 
-        public string Welcome
-        {
-            get
-            {
-                return "Welcome to MVVM Light";
-            }
-        }
-
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
@@ -68,6 +60,7 @@ namespace MyFriendsAround.WP7.ViewModel
             PublishLocationCommand = new RelayCommand(() => PublishLocationAction());
             DisplayAboutCommand = new RelayCommand(() => DisplayAbout());
             InputBoxCommand = new RelayCommand(() => InputBox());
+            NavigateToAboutCommand = new RelayCommand(() => NavigateToAbout());
 
             if (IsInDesignMode)
             {
@@ -80,6 +73,12 @@ namespace MyFriendsAround.WP7.ViewModel
                 ServiceAgent.GetFriends(this.GetFriendsResult);
             }
 
+        }
+
+        private void  NavigateToAbout()
+        {
+            //
+            this.PageNav.NavigateTo(new Uri("/Views/AboutPage.xaml", UriKind.Relative));
         }
 
         private void InputBox()
@@ -102,7 +101,7 @@ namespace MyFriendsAround.WP7.ViewModel
                                  //f.LocationStr
                                  result.Add(new PushPinModel()
                                                   {
-                                                      PinSource = "ApplicationIcon.png",
+                                                      PinSource = "/ApplicationIcon.png",
                                                       Location = new GeoCoordinate(f.Latitude, f.Longitude)
                                                   });
                              });            
@@ -161,10 +160,17 @@ namespace MyFriendsAround.WP7.ViewModel
             }
         }
 
-        public RelayCommand PublishLocationCommand { get; set; }
-        public RelayCommand DisplayAboutCommand { get; set; }
-        public RelayCommand InputBoxCommand { get; set; }
-        
+        public ICommand PublishLocationCommand { get; set; }
+        public ICommand DisplayAboutCommand { get; set; }
+        public ICommand InputBoxCommand { get; set; }
+
+        public ICommand NavigateToAboutCommand
+        {
+            get;
+            private set;
+        }
+
+
         public string MyName { get; set; }
 
         public string AppBarTextAbout {

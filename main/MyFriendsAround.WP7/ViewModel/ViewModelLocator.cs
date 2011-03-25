@@ -14,6 +14,7 @@
   DataContext="{Binding Source={x:Static vm:ViewModelLocatorTemplate.ViewModelNameStatic}}"
 */
 
+using MyFriendsAround.WP7.Helpers.Navigation;
 namespace MyFriendsAround.WP7.ViewModel
 {
     /// <summary>
@@ -55,81 +56,79 @@ namespace MyFriendsAround.WP7.ViewModel
     /// </summary>
     public class ViewModelLocator
     {
-        private static MainViewModel _main;
 
         /// <summary>
         /// Initializes a new instance of the ViewModelLocator class.
         /// </summary>
         public ViewModelLocator()
         {
-            ////if (ViewModelBase.IsInDesignModeStatic)
-            ////{
-            ////    // Create design time view models
-            ////}
-            ////else
-            ////{
-            ////    // Create run time view models
-            ////}
-
-            CreateMain();
-        }
-
-        /// <summary>
-        /// Gets the Main property.
-        /// </summary>
-        public static MainViewModel MainStatic
-        {
-            get
+            if (ViewModelBase.IsInDesignModeStatic)
             {
-                if (_main == null)
-                {
-                    CreateMain();
-                }
-
-                return _main;
+                // Create design time view models
             }
+            else
+            {
+                //Register PageNavigation - only if not design time
+                Container.Instance.RegisterInstance(typeof(PageNavigation), "PageNavigation");
+
+                // Create run time view models
+            }
+
+            Container.Instance.RegisterInstance(typeof(MainViewModel), "MainViewModel");
+            Container.Instance.RegisterInstance(typeof(AboutViewModel), "AboutViewModel");
         }
 
         /// <summary>
         /// Gets the Main property.
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
-            "CA1822:MarkMembersAsStatic",
-            Justification = "This non-static member is needed for data binding purposes.")]
         public MainViewModel Main
         {
             get
             {
-                return MainStatic;
+                MainViewModel mainViewModel = GetViewModel<MainViewModel>();
+                return mainViewModel;
             }
         }
 
         /// <summary>
-        /// Provides a deterministic way to delete the Main property.
+        /// Gets the About property.
         /// </summary>
-        public static void ClearMain()
+        public AboutViewModel About
         {
-            _main.Cleanup();
-            _main = null;
-        }
-
-        /// <summary>
-        /// Provides a deterministic way to create the Main property.
-        /// </summary>
-        public static void CreateMain()
-        {
-            if (_main == null)
+            get
             {
-                _main = new MainViewModel();
+                AboutViewModel aboutViewModel = GetViewModel<AboutViewModel>();
+                return aboutViewModel;
             }
         }
+
 
         /// <summary>
         /// Cleans up all the resources.
         /// </summary>
-        public static void Cleanup()
+        public void Cleanup()
         {
-            ClearMain();
+            MainViewModel mainViewModel = GetViewModel<MainViewModel>();
+            mainViewModel.Cleanup();
+            AboutViewModel aboutViewModel = GetViewModel<AboutViewModel>();
+            aboutViewModel.Cleanup();
         }
+
+
+
+        #region Local Helpers
+
+        private T GetViewModel<T>() where T : ViewModelBase
+        {
+            // Create a new view model
+            T vm = Container.Instance.Resolve<T>();
+
+            //Assign the Context from PageNavigation to Context property of the ViewModelBase
+            vm.Context = vm.PageNav.CurrentContext;
+
+            return vm;
+        }
+
+        #endregion
     }
 }
