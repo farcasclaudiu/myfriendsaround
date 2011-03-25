@@ -171,7 +171,31 @@ namespace MyFriendsAround.WP7.ViewModel
         }
 
 
-        public string MyName { get; set; }
+        /// <summary>
+        /// The <see cref="MyName" /> property's name.
+        /// </summary>
+        public const string MyNamePropertyName = "MyName";
+        private string _myName = "Guest";
+
+        /// <summary>
+        /// Gets the MyName property.
+        /// </summary>
+        public string MyName
+        {
+            get { return _myName; }
+            set
+            {
+                if (_myName == value)
+                {
+                    return;
+                }
+                var oldValue = _myName;
+                _myName = value;
+                // Update bindings, no broadcast
+                RaisePropertyChanged(MyNamePropertyName);
+            }
+        }
+
 
         public string AppBarTextAbout {
             get { return "About"; }
