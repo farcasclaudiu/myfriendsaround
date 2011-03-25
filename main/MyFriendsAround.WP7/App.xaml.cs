@@ -13,6 +13,8 @@ using System.Windows.Shapes;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using MyFriendsAround.WP7.ViewModel;
+using MyFriendsAround.WP7.Utils;
+
 
 namespace MyFriendsAround.WP7
 {
@@ -43,27 +45,62 @@ namespace MyFriendsAround.WP7
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
+            LoadModel();
         }
 
         // Code to execute when the application is activated (brought to foreground)
         // This code will not execute when the application is first launched
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
+            LoadModel();
         }
 
         // Code to execute when the application is deactivated (sent to background)
         // This code will not execute when the application is closing
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
+            SaveModel();
         }
 
         // Code to execute when the application is closing (eg, user hit Back)
         // This code will not execute when the application is deactivated
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
+            SaveModel();
+            //
             ViewModelLocator locator = Container.Instance.Resolve<ViewModelLocator>();
             locator.Cleanup();
         }
+
+
+        private void LoadModel()
+        {
+            MainViewModel mainModel = this.RetrieveFromIsolatedStorage<MainViewModel>();
+            if (mainModel != null)
+            {
+                Container.Instance.RegisterInstance<MainViewModel>(mainModel, "MainViewModel");
+            }
+            else
+            {
+                Container.Instance.RegisterInstance<MainViewModel>(new MainViewModel(), "MainViewModel");
+            }
+            AboutViewModel aboutModel = this.RetrieveFromIsolatedStorage<AboutViewModel>();
+            if (aboutModel != null)
+            {
+                Container.Instance.RegisterInstance<AboutViewModel>(aboutModel, "AboutViewModel");
+            }
+            else
+            {
+                Container.Instance.RegisterInstance<AboutViewModel>( new AboutViewModel(), "AboutViewModel");
+            }
+        }
+
+        private void SaveModel()
+        {
+            this.SaveToIsolatedStorage<MainViewModel>(Container.Instance.Resolve<MainViewModel>("MainViewModel"));
+            this.SaveToIsolatedStorage<AboutViewModel>(Container.Instance.Resolve<AboutViewModel>("AboutViewModel"));
+        }
+
 
         // Code to execute if a navigation fails
         void RootFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
@@ -84,6 +121,7 @@ namespace MyFriendsAround.WP7
                 System.Diagnostics.Debugger.Break();
             }
         }
+
 
         #region Phone application initialization
 

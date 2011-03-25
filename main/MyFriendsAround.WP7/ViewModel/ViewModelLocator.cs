@@ -74,8 +74,6 @@ namespace MyFriendsAround.WP7.ViewModel
                 // Create run time view models
             }
 
-            Container.Instance.RegisterInstance(typeof(MainViewModel), "MainViewModel");
-            Container.Instance.RegisterInstance(typeof(AboutViewModel), "AboutViewModel");
         }
 
         /// <summary>
@@ -85,7 +83,7 @@ namespace MyFriendsAround.WP7.ViewModel
         {
             get
             {
-                MainViewModel mainViewModel = GetViewModel<MainViewModel>();
+                MainViewModel mainViewModel = GetViewModel<MainViewModel>("MainViewModel");
                 return mainViewModel;
             }
         }
@@ -97,7 +95,7 @@ namespace MyFriendsAround.WP7.ViewModel
         {
             get
             {
-                AboutViewModel aboutViewModel = GetViewModel<AboutViewModel>();
+                AboutViewModel aboutViewModel = GetViewModel<AboutViewModel>("AboutViewModel");
                 return aboutViewModel;
             }
         }
@@ -108,9 +106,9 @@ namespace MyFriendsAround.WP7.ViewModel
         /// </summary>
         public void Cleanup()
         {
-            MainViewModel mainViewModel = GetViewModel<MainViewModel>();
+            MainViewModel mainViewModel = GetViewModel<MainViewModel>("MainViewModel");
             mainViewModel.Cleanup();
-            AboutViewModel aboutViewModel = GetViewModel<AboutViewModel>();
+            AboutViewModel aboutViewModel = GetViewModel<AboutViewModel>("AboutViewModel");
             aboutViewModel.Cleanup();
         }
 
@@ -118,10 +116,10 @@ namespace MyFriendsAround.WP7.ViewModel
 
         #region Local Helpers
 
-        private T GetViewModel<T>() where T : ViewModelBase
+        private T GetViewModel<T>(string key) where T : ViewModelBase
         {
             // Create a new view model
-            T vm = Container.Instance.Resolve<T>();
+            T vm = Container.Instance.Resolve<T>(key);
 
             //Assign the Context from PageNavigation to Context property of the ViewModelBase
             vm.Context = vm.PageNav.CurrentContext;
