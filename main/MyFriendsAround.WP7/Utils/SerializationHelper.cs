@@ -28,5 +28,6 @@ namespace MyFriendsAround.WP7.Utils
         {
             return JsonConvert.SerializeObject(obj);
         }
+
     }
 }

@@ -53,11 +53,6 @@
 		      Grid.Row="1"
               Margin="0,0,0,70">
 
-			<TextBlock Text="{Binding Welcome}"
-			           Style="{StaticResource PhoneTextNormalStyle}"
-			           HorizontalAlignment="Center"
-			           VerticalAlignment="Center"
-			           FontSize="40" />
             <!--<Button Content="Publish"
                     HorizontalAlignment="Left" Margin="6,0,0,6" Name="btnPublishLocation"
                     Width="468"
@@ -104,7 +99,7 @@
             <Preview:BindableApplicationBarIconButton Command="{Binding PublishLocationCommand}"
                                                       IconUri="/icons/appbar.publish.png"
                                                       Text="{Binding AppBarTextPublish}" />
-            <Preview:BindableApplicationBarIconButton Command="{Binding DisplayAboutCommand}"
+            <Preview:BindableApplicationBarIconButton Command="{Binding NavigateToAboutCommand}"
                                                       IconUri="/icons/appbar.questionmark.rest.png"
                                                       Text="{Binding AppBarTextAbout}" />
             

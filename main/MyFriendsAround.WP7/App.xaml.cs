@@ -34,6 +34,9 @@ namespace MyFriendsAround.WP7
 
             // Phone-specific initialization
             InitializePhoneApplication();
+
+            //register ViewModelLocator
+            Container.Instance.RegisterInstance(typeof(ViewModelLocator), "ViewModelLocator");
         }
 
         // Code to execute when the application is launching (eg, from Start)
@@ -58,7 +61,8 @@ namespace MyFriendsAround.WP7
         // This code will not execute when the application is deactivated
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
-            ViewModelLocator.Cleanup();
+            ViewModelLocator locator = Container.Instance.Resolve<ViewModelLocator>();
+            locator.Cleanup();
         }
 
         // Code to execute if a navigation fails

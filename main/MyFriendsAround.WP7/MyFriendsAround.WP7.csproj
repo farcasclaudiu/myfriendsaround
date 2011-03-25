@@ -116,7 +116,12 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MainPage.xaml.cs">
+    <Compile Include="Helpers\Navigation\IPageNavigation.cs" />
+    <Compile Include="Helpers\Navigation\PageNavigation.cs" />
+    <Compile Include="Views\AboutPage.xaml.cs">
+      <DependentUpon>AboutPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -126,8 +131,11 @@
     <Compile Include="Tests\Tests1.cs" />
     <Compile Include="Utils\Identification.cs" />
     <Compile Include="Utils\SerializationHelper.cs" />
+    <Compile Include="ViewModel\Container.cs" />
+    <Compile Include="ViewModel\AboutViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\PushPinModel.cs" />
+    <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -135,7 +143,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainPage.xaml">
+    <Page Include="Views\AboutPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -158,12 +170,11 @@
     <Content Include="icons\appbar.questionmark.rest.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="README_FIRST.txt" />
     <Content Include="SplashScreenImage.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Resource Include="Toolkit.Content\ApplicationBar.Cancel.png" />
-    <Resource Include="Toolkit.Content\ApplicationBar.Check.png" />
+    <Content Include="Toolkit.Content\ApplicationBar.Cancel.png" />
+    <Content Include="Toolkit.Content\ApplicationBar.Check.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Model\" />
@@ -175,6 +186,10 @@
     <ProjectReference Include="..\Libs\GpsEmulator\GpsEmulatorClient\GpsEmulatorClient.csproj">
       <Project>{A128812A-1249-4562-BDF4-5E17951B8434}</Project>
       <Name>GpsEmulatorClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libs\MicroIoc\MicroIoc.Core\MicroIoc.Core.csproj">
+      <Project>{23F63AE9-A436-4B27-9113-4142C09ADD08}</Project>
+      <Name>MicroIoc.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Libs\Phone7.Fx.Preview\Phone7.Fx.Preview.csproj">
       <Project>{B55A0F90-2B5A-4C4B-88F4-013AA1629866}</Project>
