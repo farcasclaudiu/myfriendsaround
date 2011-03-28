@@ -14,6 +14,7 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using MyFriendsAround.WP7.ViewModel;
 using MyFriendsAround.WP7.Utils;
+using GalaSoft.MvvmLight.Threading;
 
 
 namespace MyFriendsAround.WP7
@@ -45,6 +46,7 @@ namespace MyFriendsAround.WP7
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
+            DispatcherHelper.Initialize();
             LoadModel();
         }
 
@@ -52,6 +54,7 @@ namespace MyFriendsAround.WP7
         // This code will not execute when the application is first launched
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
+            DispatcherHelper.Initialize();
             LoadModel();
         }
 
@@ -75,6 +78,7 @@ namespace MyFriendsAround.WP7
 
         private void LoadModel()
         {
+            //
             MainViewModel mainModel = this.RetrieveFromIsolatedStorage<MainViewModel>();
             if (mainModel != null)
             {
