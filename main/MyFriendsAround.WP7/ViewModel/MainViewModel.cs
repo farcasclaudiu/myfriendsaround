@@ -56,11 +56,12 @@ namespace MyFriendsAround.WP7.ViewModel
         /// </summary>
         public MainViewModel()
         {
-            MyName = "Guest";
+            //
             PublishLocationCommand = new RelayCommand(() => PublishLocationAction());
             DisplayAboutCommand = new RelayCommand(() => DisplayAbout());
             InputBoxCommand = new RelayCommand(() => InputBox());
             NavigateToAboutCommand = new RelayCommand(() => NavigateToAbout());
+            RefreshFriendsCommand = new RelayCommand(() => RefreshFriends());
 
             if (IsInDesignMode)
             {
@@ -69,10 +70,14 @@ namespace MyFriendsAround.WP7.ViewModel
             else
             {
                 // Code runs "for real"
-                IsBusy = true;
-                ServiceAgent.GetFriends(this.GetFriendsResult);
             }
 
+        }
+
+        private void RefreshFriends()
+        {
+            IsBusy = true;
+            ServiceAgent.GetFriends(this.GetFriendsResult);
         }
 
         private void  NavigateToAbout()
@@ -163,12 +168,8 @@ namespace MyFriendsAround.WP7.ViewModel
         public ICommand PublishLocationCommand { get; set; }
         public ICommand DisplayAboutCommand { get; set; }
         public ICommand InputBoxCommand { get; set; }
-
-        public ICommand NavigateToAboutCommand
-        {
-            get;
-            private set;
-        }
+        public ICommand NavigateToAboutCommand { get; set; }
+        public ICommand RefreshFriendsCommand { get; set; }
 
 
         /// <summary>
@@ -204,6 +205,11 @@ namespace MyFriendsAround.WP7.ViewModel
         public string AppBarTextPublish
         {
             get { return "Publish"; }
+        }
+
+        public string AppBarTextRefresh
+        {
+            get { return "Refresh"; }
         }
 
         ////public override void Cleanup()

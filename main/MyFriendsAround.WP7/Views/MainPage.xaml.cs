@@ -12,8 +12,6 @@ namespace MyFriendsAround.WP7
         // Constructor
         public MainPage()
         {
-
-            DispatcherHelper.Initialize();
             InitializeComponent();
 
             Messenger.Default.Register<DialogMessage>(

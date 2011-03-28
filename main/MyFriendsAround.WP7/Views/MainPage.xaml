@@ -19,7 +19,8 @@
                             shell:SystemTray.IsVisible="True"
                             DataContext="{Binding Main, Source={StaticResource Locator}}"
                             xmlns:my="clr-namespace:Microsoft.Phone.Controls.Maps;assembly=Microsoft.Phone.Controls.Maps"
-                            xmlns:Preview="clr-namespace:Phone7.Fx.Preview;assembly=Phone7.Fx.Preview">
+                            xmlns:Preview="clr-namespace:Phone7.Fx.Preview;assembly=Phone7.Fx.Preview"
+                            xmlns:binding="clr-namespace:Coding4Fun.Phone.Controls.Binding;assembly=Coding4Fun.Phone.Controls">
 
     <!--LayoutRoot contains the root grid where all other page content is placed-->
 
@@ -37,6 +38,12 @@
         </ControlTemplate>
     </phone:PhoneApplicationPage.Resources>
 
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <cmd:EventToCommand Command="{Binding RefreshFriendsCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    
     <Grid x:Name="LayoutRoot"
           Background="Transparent">
         <Grid.RowDefinitions>
@@ -80,7 +87,8 @@
                      Name="txtMyName"
                      Text="{Binding Path=MyName, Mode=TwoWay}"
                      VerticalAlignment="Bottom"
-                     Width="468" />
+                     Width="468"
+                     binding:TextBoxBinding.UpdateSourceOnChange="True" />
             <my:Map x:Name="map"
                     Height="468"
                     HorizontalAlignment="Left"
@@ -110,6 +118,9 @@
 
         <Preview:BindableApplicationBar x:Name="AppBar"
                                         BarOpacity="0.5">
+            <Preview:BindableApplicationBarIconButton Command="{Binding RefreshFriendsCommand}"
+                                                      IconUri="/icons/appbar.sync.rest.png"
+                                                      Text="{Binding AppBarTextRefresh}" IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertValueConverter1}}" />
             <Preview:BindableApplicationBarIconButton Command="{Binding PublishLocationCommand}"
                                                       IconUri="/icons/appbar.publish.png"
                                                       Text="{Binding AppBarTextPublish}" />
