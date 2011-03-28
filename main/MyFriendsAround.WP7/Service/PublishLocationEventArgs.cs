@@ -8,5 +8,6 @@ namespace MyFriendsAround.WP7.Service
     public class PublishLocationEventArgs: EventArgs
     {
         public bool IsSuccess { get; set; }
+        public Exception Error { get; set; }
     }
 }

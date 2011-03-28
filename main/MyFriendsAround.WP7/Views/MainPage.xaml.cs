@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Security;
 using System.Windows;
 using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Threading;
 using Microsoft.Phone.Controls;
 using Microsoft.Silverlight.Testing;
+using MyFriendsAround.WP7.Views;
 
 namespace MyFriendsAround.WP7
 {

@@ -8,7 +8,9 @@
              mc:Ignorable="d"
              xmlns:vm="clr-namespace:MyFriendsAround.WP7.ViewModel"
              xmlns:my="clr-namespace:Coding4Fun.Phone.Controls.Converters;assembly=Coding4Fun.Phone.Controls"
-             xmlns:my1="clr-namespace:Microsoft.Silverlight.Testing.Client;assembly=Microsoft.Silverlight.Testing">
+             xmlns:my1="clr-namespace:Microsoft.Silverlight.Testing.Client;assembly=Microsoft.Silverlight.Testing"
+             xmlns:Controls="clr-namespace:Coding4Fun.Phone.Controls;assembly=Coding4Fun.Phone.Controls"
+             xmlns:Views="clr-namespace:MyFriendsAround.WP7.Views">
 
     <!--Application Resources-->
     <Application.Resources>
@@ -16,6 +18,8 @@
                              d:IsDataSource="True" />
         <my:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter1" />
         <my1:InvertValueConverter x:Key="InvertValueConverter1" />
+
+
     </Application.Resources>
 
     <Application.ApplicationLifetimeObjects>

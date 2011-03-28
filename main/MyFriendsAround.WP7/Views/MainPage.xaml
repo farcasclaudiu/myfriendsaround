@@ -38,11 +38,11 @@
         </ControlTemplate>
     </phone:PhoneApplicationPage.Resources>
 
-    <i:Interaction.Triggers>
+    <!--<i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <cmd:EventToCommand Command="{Binding RefreshFriendsCommand}" />
         </i:EventTrigger>
-    </i:Interaction.Triggers>
+    </i:Interaction.Triggers>-->
     
     <Grid x:Name="LayoutRoot"
           Background="Transparent">
