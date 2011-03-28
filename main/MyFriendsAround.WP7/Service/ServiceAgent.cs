@@ -1,26 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using Hammock;
-using Hammock.Streaming;
-using Hammock.Tasks;
 using Hammock.Web;
 using MyFriendsAround.Common.Entities;
-using Hammock.Caching;
-using CacheMode = Hammock.Caching.CacheMode;
 
 namespace MyFriendsAround.WP7.Service
 {
     public static class ServiceAgent
     {
+
+        private static int _timeOut = 10;
 
         #region GetFriends
 
@@ -32,15 +22,25 @@ namespace MyFriendsAround.WP7.Service
             RestClient client = new RestClient
             {
                 Authority = "http://localhost.:55672/myfriends",
+                Timeout = new TimeSpan(0, 0, 0, _timeOut),
                 Serializer = serializer,
                 Deserializer = serializer
             };
             RestRequest request = new RestRequest
                                       {
-                                          Path = "GetFriends" + "?timestamp=" + DateTime.Now.Ticks.ToString()
+                                          Path = "GetFriends" + "?timestamp=" + DateTime.Now.Ticks.ToString(),
+                                          Timeout = new TimeSpan(0, 0, 0, _timeOut)
                                       };
             friendscallback = callback;
-            client.BeginRequest(request, new RestCallback<List<Friend>>(GetFriendsCallback));
+            try
+            {
+                client.BeginRequest(request, new RestCallback<List<Friend>>(GetFriendsCallback));
+            }
+            catch (Exception ex)
+            {
+                friendscallback.Invoke(null, new FriendsListEventArgs() { Friends = null, Error = ex });
+            }
+            
         }
 
         public static void GetFriendsCallback(RestRequest request, RestResponse<List<Friend>> response, object userState)
@@ -49,6 +49,10 @@ namespace MyFriendsAround.WP7.Service
             {
                 List<Friend> list = response.ContentEntity;
                 friendscallback.Invoke(null, new FriendsListEventArgs() { Friends = list });
+            }
+            else
+            {
+                friendscallback.Invoke(null, new FriendsListEventArgs() { Friends = null, Error = new Exception("Communication Error!") });
             }
         }
 
@@ -66,17 +70,27 @@ namespace MyFriendsAround.WP7.Service
             RestClient client = new RestClient
             {
                 Authority = "http://localhost.:55672/myfriends",
+                Timeout = new TimeSpan(0, 0, 0, _timeOut),
                 Serializer = serializer,
                 Deserializer = serializer
             };
             RestRequest request = new RestRequest
             {
+                Timeout = new TimeSpan(0, 0, 0, _timeOut),
                 Method = WebMethod.Post,
                 Path = "PublishLocation",
                 Entity = friend
             };
             publishlocationcallback = callback;
-            client.BeginRequest(request, new RestCallback<bool>(PublishLocationCallback));
+            try
+            {
+                client.BeginRequest(request, new RestCallback<bool>(PublishLocationCallback));
+            }
+            catch (Exception ex)
+            {
+                publishlocationcallback.Invoke(null, new PublishLocationEventArgs() { IsSuccess = false, Error = ex });
+            }
+            
         }
 
         public static void PublishLocationCallback(RestRequest request, RestResponse<bool> response, object userState)
@@ -85,6 +99,10 @@ namespace MyFriendsAround.WP7.Service
             {
                 bool success = response.ContentEntity;
                 publishlocationcallback.Invoke(null, new PublishLocationEventArgs() { IsSuccess = success });
+            }
+            else
+            {
+                publishlocationcallback.Invoke(null, new PublishLocationEventArgs() { IsSuccess = false, Error = new Exception("Communication Error!")});
             }
         }
 

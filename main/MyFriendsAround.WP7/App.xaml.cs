@@ -15,6 +15,7 @@ using Microsoft.Phone.Shell;
 using MyFriendsAround.WP7.ViewModel;
 using MyFriendsAround.WP7.Utils;
 using GalaSoft.MvvmLight.Threading;
+using MyFriendsAround.WP7.Views;
 
 
 namespace MyFriendsAround.WP7
@@ -95,7 +96,7 @@ namespace MyFriendsAround.WP7
             }
             else
             {
-                Container.Instance.RegisterInstance<AboutViewModel>( new AboutViewModel(), "AboutViewModel");
+                Container.Instance.RegisterInstance<AboutViewModel>(new AboutViewModel(), "AboutViewModel");
             }
         }
 
@@ -109,6 +110,14 @@ namespace MyFriendsAround.WP7
         // Code to execute if a navigation fails
         void RootFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
         {
+            //LittleWatson.ReportException(e.Exception, string.Empty);
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    var exception = new ExceptionPrompt();
+                    exception.Show(e.Exception);
+                }
+            );
+
             if (System.Diagnostics.Debugger.IsAttached)
             {
                 // A navigation has failed; break into the debugger
@@ -119,11 +128,22 @@ namespace MyFriendsAround.WP7
         // Code to execute on Unhandled Exceptions
         private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
+            //LittleWatson.ReportException(e.ExceptionObject, string.Empty);
+
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    var exception = new ExceptionPrompt();
+                    exception.Show(e.ExceptionObject);
+                }
+            );
+
             if (System.Diagnostics.Debugger.IsAttached)
             {
                 // An unhandled exception has occurred; break into the debugger
                 System.Diagnostics.Debugger.Break();
             }
+
+            e.Handled = true;
         }
 
 
@@ -159,6 +179,8 @@ namespace MyFriendsAround.WP7
 
             // Remove this handler since it is no longer needed
             RootFrame.Navigated -= CompleteInitializePhoneApplication;
+            //
+            //LittleWatson.CheckForPreviousException();
         }
 
         #endregion

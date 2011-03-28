@@ -16,5 +16,6 @@ namespace MyFriendsAround.WP7.Service
     public class FriendsListEventArgs: EventArgs
     {
         public List<Friend> Friends { get; set; }
+        public Exception Error { get; set; }
     }
 }

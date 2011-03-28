@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Device.Location;
 using System.Net;
+using System.Security;
 using System.ServiceModel.Channels;
 using System.Windows;
 using System.Windows.Input;
@@ -17,6 +18,7 @@ using Microsoft.Silverlight.Testing;
 using MyFriendsAround.Common.Entities;
 using MyFriendsAround.WP7.Service;
 using MyFriendsAround.WP7.Utils;
+using MyFriendsAround.WP7.Views;
 using Newtonsoft.Json;
 
 namespace MyFriendsAround.WP7.ViewModel
@@ -59,7 +61,6 @@ namespace MyFriendsAround.WP7.ViewModel
             //
             PublishLocationCommand = new RelayCommand(() => PublishLocationAction());
             DisplayAboutCommand = new RelayCommand(() => DisplayAbout());
-            InputBoxCommand = new RelayCommand(() => InputBox());
             NavigateToAboutCommand = new RelayCommand(() => NavigateToAbout());
             RefreshFriendsCommand = new RelayCommand(() => RefreshFriends());
 
@@ -80,15 +81,10 @@ namespace MyFriendsAround.WP7.ViewModel
             ServiceAgent.GetFriends(this.GetFriendsResult);
         }
 
-        private void  NavigateToAbout()
+        private void NavigateToAbout()
         {
             //
             this.PageNav.NavigateTo(new Uri("/Views/AboutPage.xaml", UriKind.Relative));
-        }
-
-        private void InputBox()
-        {
-            MessageBox.Show("Input box");
         }
 
 
@@ -109,7 +105,7 @@ namespace MyFriendsAround.WP7.ViewModel
                                                       PinSource = "/ApplicationIcon.png",
                                                       Location = new GeoCoordinate(f.Latitude, f.Longitude)
                                                   });
-                             });            
+                             });
             PushPins = result;
         }
 
@@ -127,30 +123,60 @@ namespace MyFriendsAround.WP7.ViewModel
 
         public void GetFriendsResult(object sender, FriendsListEventArgs args)
         {
-            List<Friend> list = args.Friends;
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                                                      {
-                                                          PopulatePushPins(list);
-                                                          IsBusy = false;
-                                                      }
-                );
+            if (args.Error == null)
+            {
+                List<Friend> list = args.Friends;
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                                                          {
+                                                              PopulatePushPins(list);
+                                                              IsBusy = false;
+                                                          }
+                    );
+            }
+            else
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                                                          {
+                                                              IsBusy = false;
+                                                              var exception = new ExceptionPrompt();
+                                                              exception.Show(args.Error);
+                                                          }
+                    );
+            }
         }
 
         public void PublishLocationResult(object sender, PublishLocationEventArgs args)
         {
-            if (!args.IsSuccess)
+            if (args.Error != null)
             {
-                var message = new DialogMessage("Communication error!", DialogMessageCallback)
-                {
-                    Button = MessageBoxButton.OK,
-                    Caption = "Error!"
-                };
-
-                Messenger.Default.Send(message);
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                                                          {
+                                                              IsBusy = false;
+                                                              var exception = new ExceptionPrompt();
+                                                              exception.Show(args.Error);
+                                                          });
             }
-            //
-            //update
-            ServiceAgent.GetFriends(this.GetFriendsResult);
+            else
+            {
+                if (!args.IsSuccess)
+                {
+                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                                                              {
+                                                                  var message = new DialogMessage(
+                                                                      "Communication error!", DialogMessageCallback)
+                                                                                    {
+                                                                                        Button = MessageBoxButton.OK,
+                                                                                        Caption = "Error!"
+                                                                                    };
+
+                                                                  Messenger.Default.Send(message);
+                                                              });
+                }
+                //
+                //update
+                ServiceAgent.GetFriends(this.GetFriendsResult);
+            }
+
         }
 
         private void DialogMessageCallback(MessageBoxResult result)
@@ -167,7 +193,6 @@ namespace MyFriendsAround.WP7.ViewModel
 
         public ICommand PublishLocationCommand { get; set; }
         public ICommand DisplayAboutCommand { get; set; }
-        public ICommand InputBoxCommand { get; set; }
         public ICommand NavigateToAboutCommand { get; set; }
         public ICommand RefreshFriendsCommand { get; set; }
 
@@ -198,7 +223,8 @@ namespace MyFriendsAround.WP7.ViewModel
         }
 
 
-        public string AppBarTextAbout {
+        public string AppBarTextAbout
+        {
             get { return "About"; }
         }
 
@@ -260,7 +286,7 @@ namespace MyFriendsAround.WP7.ViewModel
         /// The <see cref="MapCenter" /> property's name.
         /// </summary>
         public const string MapCenterPropertyName = "MapCenter";
-        private GeoCoordinate _mapCenter = new GeoCoordinate(0,0);
+        private GeoCoordinate _mapCenter = new GeoCoordinate(0, 0);
 
         /// <summary>
         /// Gets the MapCenter property.
