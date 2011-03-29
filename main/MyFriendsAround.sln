@@ -30,6 +30,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phone7.Fx.Preview", "Libs\P
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroIoc.Core", "Libs\MicroIoc\MicroIoc.Core\MicroIoc.Core.csproj", "{23F63AE9-A436-4B27-9113-4142C09ADD08}"
 EndProject
+Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "MyFriendsAroundWindowsAzure", "MyFriendsAroundWindowsAzure\MyFriendsAroundWindowsAzure.ccproj", "{C656965D-5A6E-4BD4-9945-9C906B89128D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -239,6 +241,21 @@ Global
 		{23F63AE9-A436-4B27-9113-4142C09ADD08}.Tests|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{23F63AE9-A436-4B27-9113-4142C09ADD08}.Tests|Mixed Platforms.Build.0 = Release|Any CPU
 		{23F63AE9-A436-4B27-9113-4142C09ADD08}.Tests|x86.ActiveCfg = Release|Any CPU
+		{C656965D-5A6E-4BD4-9945-9C906B89128D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C656965D-5A6E-4BD4-9945-9C906B89128D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C656965D-5A6E-4BD4-9945-9C906B89128D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{C656965D-5A6E-4BD4-9945-9C906B89128D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{C656965D-5A6E-4BD4-9945-9C906B89128D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C656965D-5A6E-4BD4-9945-9C906B89128D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C656965D-5A6E-4BD4-9945-9C906B89128D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C656965D-5A6E-4BD4-9945-9C906B89128D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{C656965D-5A6E-4BD4-9945-9C906B89128D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{C656965D-5A6E-4BD4-9945-9C906B89128D}.Release|x86.ActiveCfg = Release|Any CPU
+		{C656965D-5A6E-4BD4-9945-9C906B89128D}.Tests|Any CPU.ActiveCfg = Release|Any CPU
+		{C656965D-5A6E-4BD4-9945-9C906B89128D}.Tests|Any CPU.Build.0 = Release|Any CPU
+		{C656965D-5A6E-4BD4-9945-9C906B89128D}.Tests|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{C656965D-5A6E-4BD4-9945-9C906B89128D}.Tests|Mixed Platforms.Build.0 = Release|Any CPU
+		{C656965D-5A6E-4BD4-9945-9C906B89128D}.Tests|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -6,7 +6,8 @@
     <h2>@ViewBag.Message</h2>
 </div>
 <p>
-    @Html.Raw(Html.DrawMap("ABQIAAAAksAhKXCpVW3aANz3gzuv4xT2yXp_ZAY8_ufC3CFXhHIE1NvwkxRJW_HFuarMuHR-nqN1g7x09OKIPQ", "/Home/GetMarkers?timestamp=" + DateTime.Now.Ticks.ToString(), "1000", "500"))
+    @Html.Raw(Html.DrawMap("ABQIAAAAksAhKXCpVW3aANz3gzuv4xSNVnIbJIiCSGOIr7YBdzhkRA0lqBRIiJsrP9FSdJi3ezjjAOwV4JljNg", "/Home/GetMarkers?timestamp=" + DateTime.Now.Ticks.ToString(), "1000", "500"))
+    @*ABQIAAAAksAhKXCpVW3aANz3gzuv4xT2yXp_ZAY8_ufC3CFXhHIE1NvwkxRJW_HFuarMuHR-nqN1g7x09OKIPQ  -  for localhost*@
     <script type="text/javascript">
         function getTimeFromserver() {
             var now = new Date();
