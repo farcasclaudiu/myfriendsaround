@@ -11,6 +11,7 @@ using System.Text;
 using MyFriendsAround.Common.Entities;
 using MyFriendsAround.Data;
 using MyFriendsAround.Data.BLL;
+using System.Web.Configuration;
 
 namespace MyFriendsAround.Web
 {
@@ -27,12 +28,27 @@ namespace MyFriendsAround.Web
             return FriendsRepository.GetFriends();
         }
 
+        [OperationContract]
+        [WebGet(ResponseFormat = WebMessageFormat.Json)]
+        public List<Friend> GetFriends(int skip)
+        {
+            int take = Convert.ToInt32(WebConfigurationManager.AppSettings["takeTopFriends"]);
+            return FriendsRepository.GetFriends(skip, take);
+        }
+
 
         [OperationContract]
         [WebInvoke(ResponseFormat = WebMessageFormat.Json, Method = "POST")]
         public bool PublishLocation(Friend friend)
         {
             return FriendsRepository.PublishLocation(friend);
+        }
+
+        [OperationContract]
+        [WebInvoke(ResponseFormat = WebMessageFormat.Json, Method = "POST")]
+        public bool UpdatePicture(string userId, byte[] userPicture)
+        {
+            return FriendsRepository.UpdatePicture(userId, userPicture);
         }
         
     }

@@ -8,7 +8,7 @@ using MyFriendsAround.Data.BLL;
 
 namespace MyFriendsAround.Web.Controllers
 {
-    [HandleError]
+    //[HandleError]
     public class HomeController : Controller
     {
         public ActionResult Index()

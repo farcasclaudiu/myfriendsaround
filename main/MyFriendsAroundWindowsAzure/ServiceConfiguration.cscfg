@@ -3,7 +3,7 @@
   <Role name="MyFriendsAround.Web">
     <Instances count="1" />
     <ConfigurationSettings>
-      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName=myfriendsaround;AccountKey=q6VfarAitAElTN+u0GD/F3kS3f+CGFdNNoJnZltTbFJnv7VEDZHwWX99JG6ZEUzQNjtdL9uLg8uske+ls8/uPg==" />
     </ConfigurationSettings>
   </Role>
 </ServiceConfiguration>

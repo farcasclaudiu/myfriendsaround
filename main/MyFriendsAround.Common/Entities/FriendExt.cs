@@ -7,16 +7,10 @@ namespace MyFriendsAround.Common.Entities
 {
     public partial class Friend
     {
-        public virtual double Latitude
-        {
-            get;
-            set;
-        }
 
-        public virtual double Longitude
-        {
-            get;
-            set;
-        }
+        public virtual double Latitude { get; set; }
+        public virtual double Longitude { get; set; }
+        public virtual string PictureUrl { get; set; }
+
     }
 }

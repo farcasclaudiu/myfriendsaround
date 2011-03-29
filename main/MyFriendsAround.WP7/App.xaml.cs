@@ -89,21 +89,21 @@ namespace MyFriendsAround.WP7
             {
                 Container.Instance.RegisterInstance<MainViewModel>(new MainViewModel(), "MainViewModel");
             }
-            AboutViewModel aboutModel = this.RetrieveFromIsolatedStorage<AboutViewModel>();
-            if (aboutModel != null)
+            SettingsViewModel settingsModel = this.RetrieveFromIsolatedStorage<SettingsViewModel>();
+            if (settingsModel != null)
             {
-                Container.Instance.RegisterInstance<AboutViewModel>(aboutModel, "AboutViewModel");
+                Container.Instance.RegisterInstance<SettingsViewModel>(settingsModel, "SettingsViewModel");
             }
             else
             {
-                Container.Instance.RegisterInstance<AboutViewModel>(new AboutViewModel(), "AboutViewModel");
+                Container.Instance.RegisterInstance<SettingsViewModel>(new SettingsViewModel(), "SettingsViewModel");
             }
         }
 
         private void SaveModel()
         {
             this.SaveToIsolatedStorage<MainViewModel>(Container.Instance.Resolve<MainViewModel>("MainViewModel"));
-            this.SaveToIsolatedStorage<AboutViewModel>(Container.Instance.Resolve<AboutViewModel>("AboutViewModel"));
+            this.SaveToIsolatedStorage<SettingsViewModel>(Container.Instance.Resolve<SettingsViewModel>("SettingsViewModel"));
         }
 
 

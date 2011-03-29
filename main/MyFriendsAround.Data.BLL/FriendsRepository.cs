@@ -12,11 +12,16 @@ namespace MyFriendsAround.Data.BLL
     public static class FriendsRepository
     {
         public static List<Friend> GetFriends()
-        {            
+        {
+            return GetFriends(0, 50);
+        }
+
+        public static List<Friend> GetFriends(int skip, int take)
+        {
             using (MyFriendsModelContainer ctx = new MyFriendsModelContainer())
             {
                 ctx.ContextOptions.ProxyCreationEnabled = false;
-                List<Friend> list = ctx.Friends.ToList();
+                List<Friend> list = ctx.Friends.OrderByDescending(f=> f.LastUpdated).Skip(skip).Take(take).ToList();
                 list.ForEach((f) =>
                                  {
                                      SqlGeometry geom = SqlGeometry.Parse(f.LocationStr);
@@ -59,5 +64,12 @@ namespace MyFriendsAround.Data.BLL
                 return success;
             }
         }
+
+        public static bool UpdatePicture(string userId, byte[] userPicture)
+        {
+
+            return false;
+        }
+
     }
 }

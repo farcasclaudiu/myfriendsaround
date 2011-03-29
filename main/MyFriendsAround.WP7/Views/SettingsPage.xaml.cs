@@ -13,9 +13,9 @@ using Microsoft.Phone.Controls;
 
 namespace MyFriendsAround.WP7.Views
 {
-    public partial class AboutPage : PhoneApplicationPage
+    public partial class SettingsPage : PhoneApplicationPage
     {
-        public AboutPage()
+        public SettingsPage()
         {
             InitializeComponent();
         }
