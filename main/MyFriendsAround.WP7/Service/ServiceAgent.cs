@@ -11,17 +11,25 @@ namespace MyFriendsAround.WP7.Service
     {
 
         private static int _timeOut = 10;
+        private static string baseUrl;
+
+        static ServiceAgent()
+        {
+            baseUrl = "http://myfriendsaround.cloudapp.net/myfriends";//live azure
+            //baseUrl = "http://127.0.0.1:8086/myfriends";//running in local azure emulator
+            //baseUrl = "http://localhost.:55672/myfriends";//for local asp.net mvc use 
+        }
 
         #region GetFriends
 
-        private static EventHandler<FriendsListEventArgs> friendscallback;
+        static EventHandler<FriendsListEventArgs> friendscallback;
 
         public static void GetFriends(EventHandler<FriendsListEventArgs> callback)
         {
             var serializer = new Hammock.Serialization.HammockDataContractJsonSerializer();
             RestClient client = new RestClient
             {
-                Authority = "http://localhost.:55672/myfriends",
+                Authority = baseUrl,
                 Timeout = new TimeSpan(0, 0, 0, _timeOut),
                 Serializer = serializer,
                 Deserializer = serializer
@@ -69,7 +77,7 @@ namespace MyFriendsAround.WP7.Service
             var serializer = new Hammock.Serialization.HammockDataContractJsonSerializer();
             RestClient client = new RestClient
             {
-                Authority = "http://localhost.:55672/myfriends",
+                Authority = baseUrl,
                 Timeout = new TimeSpan(0, 0, 0, _timeOut),
                 Serializer = serializer,
                 Deserializer = serializer
