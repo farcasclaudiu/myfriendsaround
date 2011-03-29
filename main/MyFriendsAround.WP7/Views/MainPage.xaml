@@ -51,23 +51,12 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel x:Name="TitlePanel"
-                    Grid.Row="0"
-                    Margin="24,24,0,12">
-            <TextBlock x:Name="ApplicationTitle"
-                       Text="{Binding ApplicationTitle}"
-                       Style="{StaticResource PhoneTextNormalStyle}" />
-            <TextBlock x:Name="PageTitle"
-                       Text="{Binding PageName}"
-                       Margin="-3,-8,0,0"
-                       Style="{StaticResource PhoneTextTitle1Style}" />
-        </StackPanel>
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentGrid"
-              Grid.Row="1"
-              Margin="0,0,0,70">
+              Grid.Row="0" VerticalAlignment="Stretch" 
+              Grid.RowSpan="2"
+              Margin="0">
 
             <!--<Button Content="Publish"
                     HorizontalAlignment="Left" Margin="6,0,0,6" Name="btnPublishLocation"
@@ -81,20 +70,10 @@
                 </i:Interaction.Triggers>
             </Button>-->
 
-            <TextBox Height="67"
-                     HorizontalAlignment="Left"
-                     Margin="6,0,0,6"
-                     Name="txtMyName"
-                     Text="{Binding Path=MyName, Mode=TwoWay}"
-                     VerticalAlignment="Bottom"
-                     Width="468"
-                     binding:TextBoxBinding.UpdateSourceOnChange="True" />
             <my:Map x:Name="map"
-                    Height="468"
-                    HorizontalAlignment="Left"
-                    Margin="6,0,0,0"
-                    VerticalAlignment="Top"
-                    Width="468"
+                    HorizontalAlignment="Stretch"
+                    Margin="6,0,6,0"
+                    VerticalAlignment="Stretch"
                     Center="{Binding Path=MapCenter, Mode=TwoWay}">
                 <my:MapItemsControl ItemsSource="{Binding PushPins}">
                     <my:MapItemsControl.ItemTemplate>
@@ -116,21 +95,67 @@
                                             IsIndeterminate="{Binding Path=IsBusy}" />
         </Grid>
 
+
+        <!--TitlePanel contains the name of the application and page title-->
+        <Grid x:Name="TitlePanel"
+                    Grid.Row="0"
+                    Margin="0"
+                    Background="Black" 
+                    VerticalAlignment="Top"
+                    HorizontalAlignment="Stretch"
+                    Opacity="0.8">
+            <TextBlock x:Name="ApplicationTitle"
+                       Margin="12, 12, 0, 0"
+                       Text="{Binding ApplicationTitle}"
+                       Foreground="#00fffc"
+                       Style="{StaticResource PhoneTextNormalStyle}" />
+            <Grid Margin="0,6,6,6"
+                  Height="80">
+                <Grid Width="80"
+                      Height="80"
+                      HorizontalAlignment="Right"
+                      Background="Transparent"
+                      Opacity="1"
+                      >
+                    <Image x:Name="imgMine"
+                           Source="{Binding MyPicture}">
+                    </Image>
+                    <Border Background="#00fffc"
+                            Width="80"
+                            Height="25"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Bottom"
+                            BorderThickness="0">
+                        <TextBlock x:Name="txtMyName"
+                                   Style="{StaticResource PhoneTextNormalStyle}"
+                                   FontSize="16"
+                                   Foreground="Black"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   Margin="2"
+                                   Text="{Binding MyName}" />
+                    </Border>
+                </Grid>
+
+            </Grid>
+
+        </Grid>
+
         <Preview:BindableApplicationBar x:Name="AppBar"
-                                        BarOpacity="0.5">
+                                        BarOpacity="0.8">
             <Preview:BindableApplicationBarIconButton Command="{Binding RefreshFriendsCommand}"
                                                       IconUri="/icons/appbar.sync.rest.png"
                                                       Text="{Binding AppBarTextRefresh}" IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertValueConverter1}}" />
             <Preview:BindableApplicationBarIconButton Command="{Binding PublishLocationCommand}"
                                                       IconUri="/icons/appbar.publish.png"
                                                       Text="{Binding AppBarTextPublish}" />
-            <Preview:BindableApplicationBarIconButton Command="{Binding NavigateToAboutCommand}"
-                                                      IconUri="/icons/appbar.questionmark.rest.png"
-                                                      Text="{Binding AppBarTextAbout}" />
+            <Preview:BindableApplicationBarIconButton Command="{Binding NavigateToSettingsCommand}"
+                                                      IconUri="/icons/appbar.feature.settings.rest.png"
+                                                      Text="{Binding AppBarTextSettings}" />
 
             <Preview:BindableApplicationBar.MenuItems>
-                <Preview:BindableApplicationBarMenuItem  Text="Settings"
-                                                         Command="{Binding InputBoxCommand}" />
+                <Preview:BindableApplicationBarMenuItem  Text="{Binding AppBarTextAbout}"
+                                                         Command="{Binding ShowAboutCommand}" />
             </Preview:BindableApplicationBar.MenuItems>
         </Preview:BindableApplicationBar>
     </Grid>

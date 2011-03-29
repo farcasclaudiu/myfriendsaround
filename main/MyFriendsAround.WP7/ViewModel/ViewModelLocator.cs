@@ -91,11 +91,11 @@ namespace MyFriendsAround.WP7.ViewModel
         /// <summary>
         /// Gets the About property.
         /// </summary>
-        public AboutViewModel About
+        public SettingsViewModel Settings
         {
             get
             {
-                AboutViewModel aboutViewModel = GetViewModel<AboutViewModel>("AboutViewModel");
+                SettingsViewModel aboutViewModel = GetViewModel<SettingsViewModel>("SettingsViewModel");
                 return aboutViewModel;
             }
         }
@@ -108,7 +108,7 @@ namespace MyFriendsAround.WP7.ViewModel
         {
             MainViewModel mainViewModel = GetViewModel<MainViewModel>("MainViewModel");
             mainViewModel.Cleanup();
-            AboutViewModel aboutViewModel = GetViewModel<AboutViewModel>("AboutViewModel");
+            SettingsViewModel aboutViewModel = GetViewModel<SettingsViewModel>("SettingsViewModel");
             aboutViewModel.Cleanup();
         }
 

@@ -21,7 +21,7 @@ using Newtonsoft.Json;
 
 namespace MyFriendsAround.WP7.ViewModel
 {
-    public class AboutViewModel : ViewModelBase
+    public class SettingsViewModel : ViewModelBase
     {
         public string ApplicationTitle
         {
@@ -43,7 +43,7 @@ namespace MyFriendsAround.WP7.ViewModel
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
-        public AboutViewModel()
+        public SettingsViewModel()
         {
             if (IsInDesignMode)
             {
