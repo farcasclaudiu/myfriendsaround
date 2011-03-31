@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Text;
 using Hammock;
 using Hammock.Web;
 using MyFriendsAround.Common.Entities;
@@ -11,7 +12,7 @@ namespace MyFriendsAround.WP7.Service
     {
 
         private static int _timeOut = 10;
-        private static string baseUrl;
+        public static string baseUrl;
 
         static ServiceAgent()
         {
@@ -111,6 +112,59 @@ namespace MyFriendsAround.WP7.Service
             else
             {
                 publishlocationcallback.Invoke(null, new PublishLocationEventArgs() { IsSuccess = false, Error = new Exception("Communication Error!")});
+            }
+        }
+
+        #endregion
+
+
+        #region PublishMyPicture
+
+
+        public static EventHandler<PublishLocationEventArgs> publishmypicturecallback;
+        public static void PublishMyPicture(string userId, byte[] picture, EventHandler<PublishLocationEventArgs> callback)
+        {
+            var serializer = new Hammock.Serialization.HammockDataContractJsonSerializer();
+            RestClient client = new RestClient
+            {
+                Authority = baseUrl,
+                Timeout = new TimeSpan(0, 0, 0, _timeOut),
+                Serializer = serializer,
+                Deserializer = serializer
+            };
+            RestRequest request = new RestRequest
+            {
+                Timeout = new TimeSpan(0, 0, 0, _timeOut),
+                Method = WebMethod.Post,
+                Path = "UpdatePicture",
+                Entity = new PictureInfo()
+                             {
+                                 UserId = userId,
+                                 Picture = Convert.ToBase64String(picture)
+                             }
+            };
+            publishmypicturecallback = callback;
+            try
+            {
+                client.BeginRequest(request, new RestCallback<bool>(PublishMyPictureCallback));
+            }
+            catch (Exception ex)
+            {
+                publishmypicturecallback.Invoke(null, new PublishLocationEventArgs() { IsSuccess = false, Error = ex });
+            }
+
+        }
+
+        public static void PublishMyPictureCallback(RestRequest request, RestResponse<bool> response, object userState)
+        {
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                bool success = response.ContentEntity;
+                publishmypicturecallback.Invoke(null, new PublishLocationEventArgs() { IsSuccess = success });
+            }
+            else
+            {
+                publishmypicturecallback.Invoke(null, new PublishLocationEventArgs() { IsSuccess = false, Error = new Exception("Communication Error!") });
             }
         }
 

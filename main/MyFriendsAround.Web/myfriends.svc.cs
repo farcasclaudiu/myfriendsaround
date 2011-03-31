@@ -30,7 +30,7 @@ namespace MyFriendsAround.Web
 
         [OperationContract]
         [WebGet(ResponseFormat = WebMessageFormat.Json)]
-        public List<Friend> GetFriends(int skip)
+        public List<Friend> GetFriendsSkip(int skip)
         {
             int take = Convert.ToInt32(WebConfigurationManager.AppSettings["takeTopFriends"]);
             return FriendsRepository.GetFriends(skip, take);
@@ -46,9 +46,9 @@ namespace MyFriendsAround.Web
 
         [OperationContract]
         [WebInvoke(ResponseFormat = WebMessageFormat.Json, Method = "POST")]
-        public bool UpdatePicture(string userId, byte[] userPicture)
+        public bool UpdatePicture(PictureInfo pictureInfo)
         {
-            return FriendsRepository.UpdatePicture(userId, userPicture);
+            return FriendsRepository.UpdatePicture(pictureInfo.UserId, Convert.FromBase64String(pictureInfo.Picture));
         }
         
     }

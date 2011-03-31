@@ -40,6 +40,39 @@ namespace MyFriendsAround.WP7.ViewModel
             }
         }
 
+
+        private string _pinUserName;
+
+        public string PinUserName
+        {
+            get { return _pinUserName; }
+            set
+            {
+                if (_pinUserName != value)
+                {
+                    _pinUserName = value;
+                    OnPropertyChanged("PinUserName");
+                }
+            }
+        }
+
+
+        private string _pinImageUrl;
+
+        public string PinImageUrl
+        {
+            get { return _pinImageUrl; }
+            set
+            {
+                if (_pinImageUrl != value)
+                {
+                    _pinImageUrl = value;
+                    OnPropertyChanged("PinImageUrl");
+                }
+            }
+        }
+
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void OnPropertyChanged(string propertyName)

@@ -19,7 +19,6 @@
         <my:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter1" />
         <my1:InvertValueConverter x:Key="InvertValueConverter1" />
 
-
     </Application.Resources>
 
     <Application.ApplicationLifetimeObjects>

@@ -1,21 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Phone;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using MyFriendsAround.WP7.ViewModel;
 using MyFriendsAround.WP7.Utils;
 using GalaSoft.MvvmLight.Threading;
 using MyFriendsAround.WP7.Views;
+using NetworkDetection;
 
 
 namespace MyFriendsAround.WP7
@@ -38,6 +43,9 @@ namespace MyFriendsAround.WP7
 
             // Phone-specific initialization
             InitializePhoneApplication();
+
+            //init NetworkDetector
+            var dummy = NetworkDetector.Instance;
 
             //register ViewModelLocator
             Container.Instance.RegisterInstance(typeof(ViewModelLocator), "ViewModelLocator");
@@ -83,22 +91,28 @@ namespace MyFriendsAround.WP7
             MainViewModel mainModel = this.RetrieveFromIsolatedStorage<MainViewModel>();
             if (mainModel != null)
             {
+                mainModel.IsLoaded = true;
+                mainModel.IsBusy = false;
                 Container.Instance.RegisterInstance<MainViewModel>(mainModel, "MainViewModel");
             }
             else
             {
                 Container.Instance.RegisterInstance<MainViewModel>(new MainViewModel(), "MainViewModel");
             }
+            //
             SettingsViewModel settingsModel = this.RetrieveFromIsolatedStorage<SettingsViewModel>();
             if (settingsModel != null)
             {
+                settingsModel.IsLoaded = true;
                 Container.Instance.RegisterInstance<SettingsViewModel>(settingsModel, "SettingsViewModel");
             }
             else
             {
                 Container.Instance.RegisterInstance<SettingsViewModel>(new SettingsViewModel(), "SettingsViewModel");
             }
+
         }
+
 
         private void SaveModel()
         {

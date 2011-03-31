@@ -1,0 +1,56 @@
+﻿<phone:PhoneApplicationPage 
+    x:Class="NetworkDetection.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    shell:SystemTray.IsVisible="True">
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="44"/>
+            <RowDefinition Height="724*"/>
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel contains the name of the application and page title-->
+        <StackPanel x:Name="TitlePanel" Margin="12,17,0,0">
+            <TextBlock x:Name="ApplicationTitle" Text="NETWORK AWARENESS AND ZUNE DETECTION" Style="{StaticResource PhoneTextNormalStyle}"/>
+        </StackPanel>
+
+        <!--ContentPanel - place additional content here-->
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <ListBox Height="532" HorizontalAlignment="Left" Margin="6,186,0,0" Name="listBox1" VerticalAlignment="Top" Width="444" />
+            <Button Content="DF" Height="72" HorizontalAlignment="Left" Name="buttonMode" VerticalAlignment="Top" Width="102" Margin="290,64,0,0" Click="buttonMode_Click" />
+            <TextBlock Height="30" HorizontalAlignment="Left" Margin="6,130,0,0" Name="textBlock1" Text="UI Responsiveness Progressbar" VerticalAlignment="Top" />
+            <Button Content="T" Height="72" HorizontalAlignment="Left" Margin="374,0,0,0" Name="buttonTime" VerticalAlignment="Top" Width="82" Click="buttonTime_Click" />
+            <Button Content="Stop Poll" Height="72" HorizontalAlignment="Left" Margin="142,0,0,0" Name="buttonStoppPoll" VerticalAlignment="Top" Width="163" Click="buttonStoppPoll_Click" />
+            <Button Content="Start Poll" Height="72" HorizontalAlignment="Left" Name="buttonStartPoll" VerticalAlignment="Top" Width="161" Click="buttonStartPoll_Click" />
+            <Button Content="Clr" Height="72" HorizontalAlignment="Left" Margin="290,0,0,0" Name="buttonClear" VerticalAlignment="Top" Width="102" Click="buttonClear_Click" />
+            <Button Content="+ 100 mS" Height="72" HorizontalAlignment="Left" Margin="0,64,0,0" Name="buttonIncrease" VerticalAlignment="Top" Width="161" Click="buttonIncrease_Click" />
+            <Button Content="- 100 mS" Height="72" HorizontalAlignment="Left" Margin="142,64,0,0" Name="buttonDecrease" VerticalAlignment="Top" Width="163" Click="buttonDecrease_Click" />
+            <ProgressBar IsIndeterminate="True" Height="27" HorizontalAlignment="Left" Margin="6,153,0,0" Name="progressBar1" VerticalAlignment="Top" Width="444" />
+            <Button Content="R" Height="72" HorizontalAlignment="Left" Margin="374,64,0,0" Name="buttonRefresh" VerticalAlignment="Top" Width="81" Click="buttonRefresh_Click" />
+        </Grid>
+    </Grid>
+ 
+    <!--Sample code showing usage of ApplicationBar-->
+    <!--<phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True">
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar_button1.png" Text="Button 1"/>
+            <shell:ApplicationBarIconButton IconUri="/Images/appbar_button2.png" Text="Button 2"/>
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem Text="MenuItem 1"/>
+                <shell:ApplicationBarMenuItem Text="MenuItem 2"/>
+            </shell:ApplicationBar.MenuItems>
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>-->
+
+</phone:PhoneApplicationPage>
