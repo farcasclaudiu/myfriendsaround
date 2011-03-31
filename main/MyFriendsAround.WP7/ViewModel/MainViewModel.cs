@@ -6,11 +6,13 @@ using System.IO;
 using System.Net;
 using System.Security;
 using System.ServiceModel.Channels;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 using Coding4Fun.Phone.Controls;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -25,6 +27,7 @@ using MyFriendsAround.Common.Entities;
 using MyFriendsAround.WP7.Service;
 using MyFriendsAround.WP7.Utils;
 using MyFriendsAround.WP7.Views;
+using NetworkDetection;
 using Newtonsoft.Json;
 using Microsoft.Phone.Tasks;
 
@@ -68,12 +71,21 @@ namespace MyFriendsAround.WP7.ViewModel
             }
         }
 
+        public string PageNameCropping
+        {
+            get
+            {
+                return "Crop";
+            }
+        }
+
         /// <summary>
         /// Initializes a new instance of the MainViewModel class.
         /// </summary>
         public MainViewModel()
         {
             //
+            MainLoadCommand = new RelayCommand(() => MainLoad());
             PublishLocationCommand = new RelayCommand(() => PublishLocationAction());
             DisplayAboutCommand = new RelayCommand(() => DisplayAbout());
             NavigateToSettingsCommand = new RelayCommand(() => NavigateToSettings());
@@ -82,6 +94,8 @@ namespace MyFriendsAround.WP7.ViewModel
             SaveMySettingsCommand = new RelayCommand(() => SaveMySettings());
             CancelMySettingsCommand = new RelayCommand(() => CancelMySettings());
             ChoosePhotoCommand = new RelayCommand(() => ChoosePhoto());
+            CropSaveCommand = new RelayCommand(() => CropSave());
+            CropCancelCommand = new RelayCommand(() => CropCancel());
 
             if (IsInDesignMode)
             {
@@ -94,17 +108,75 @@ namespace MyFriendsAround.WP7.ViewModel
 
         }
 
+        public void CropCancel()
+        {
+            //
+            this.PageNav.GoBack();
+        }
+
+        public void CropSave()
+        {
+            //
+        }
+        
+
+        private void MainLoad()
+        {
+            if (IsLoaded)
+            {
+                //
+                ThreadPool.QueueUserWorkItem(LoadMyPicture);
+                //
+                IsLoaded = false;
+            }
+        }
+
+        private void LoadMyPicture(object param) //Background thread
+        {
+            Thread.Sleep(500);
+            byte[] img = IsolatedStorageHelper.LoadFromLocalStorageArray("myphoto.jpg", "profiles");
+            if (img != null)
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    using (MemoryStream ms = new MemoryStream(img))
+                    {
+                        Container.Instance.Resolve<MainViewModel>("MainViewModel").MyPicture = PictureDecoder.DecodeJpeg(ms);
+                    }
+                });
+            }
+            else
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    Container.Instance.Resolve<MainViewModel>("MainViewModel").MyPicture = new BitmapImage(new Uri("/icons/anonymousIcon.png", UriKind.RelativeOrAbsolute));
+                });
+            }
+        }
+
+
         private void ChoosePhoto()
         {
             //choose photo
-            ShowCameraCaptureTask();
+            //ShowCameraCaptureTask();
             //ShowPhotoChooserTask();
+            if (!NetworkDetector.Instance.GetZuneStatus())
+            {
+                this.PageNav.NavigateTo(new Uri("/Views/CropPage.xaml", UriKind.RelativeOrAbsolute));
+            }
+            else
+            {
+                MessageBox.Show("Please disconnect from Zune!");
+            }
         }
 
+        PhotoChooserTask photoChooserTask = new PhotoChooserTask();
         private void ShowPhotoChooserTask()
         {
-            var photoChooserTask = new PhotoChooserTask();
             photoChooserTask.Completed += cameraTask_Completed;
+            //photoChooserTask.PixelHeight = 100;
+            //photoChooserTask.PixelWidth = 100;
+            photoChooserTask.ShowCamera = true;
             photoChooserTask.Show();
         }
 
@@ -117,7 +189,7 @@ namespace MyFriendsAround.WP7.ViewModel
 
         private void cameraTask_Completed(object sender, PhotoResult e)
         {
-            if (e.TaskResult == TaskResult.OK)
+            if (e.ChosenPhoto!=null && e.ChosenPhoto.Length>0) // e.TaskResult == TaskResult.OK)
             {
                 // Get the image temp file from e.OriginalFileName.
                 // Get the image temp stream from e.ChosenPhoto.
@@ -127,10 +199,11 @@ namespace MyFriendsAround.WP7.ViewModel
                 // Store the image bytes.
                 byte[] _imageBytes = new byte[e.ChosenPhoto.Length];
                 e.ChosenPhoto.Read(_imageBytes, 0, _imageBytes.Length);
+                //save
+                IsolatedStorageHelper.SaveToLocalStorage("myphoto.jpg", "profiles", _imageBytes);
 
                 // Seek back so we can create an image.
                 e.ChosenPhoto.Seek(0, SeekOrigin.Begin);
-
                 // Create an image from the stream.
                 var imageSource = PictureDecoder.DecodeJpeg(e.ChosenPhoto);
                 MyPicture = imageSource;
@@ -141,12 +214,12 @@ namespace MyFriendsAround.WP7.ViewModel
         /// The <see cref="MyPicture" /> property's name.
         /// </summary>
         public const string MyPicturePropertyName = "MyPicture";
-        private BitmapSource _myPicture = new BitmapImage(new Uri("/icons/anonymousIcon.png", UriKind.RelativeOrAbsolute));
+        private ImageSource _myPicture = new BitmapImage(new Uri("/icons/anonymousIcon.png", UriKind.RelativeOrAbsolute));
 
         /// <summary>
         /// Gets the MyPicture property.
         /// </summary>
-        public BitmapSource MyPicture
+        public ImageSource MyPicture
         {
             get
             {
@@ -221,7 +294,9 @@ namespace MyFriendsAround.WP7.ViewModel
                                  result.Add(new PushPinModel()
                                                   {
                                                       PinSource = "/ApplicationIcon.png",
-                                                      Location = new GeoCoordinate(f.Latitude, f.Longitude)
+                                                      Location = new GeoCoordinate(f.Latitude, f.Longitude),
+                                                      PinUserName = f.FriendName,
+                                                      PinImageUrl = string.Format("https://myfriendsaround.blob.core.windows.net/profiles/profile_{0}.jpg", f.Id) 
                                                   });
                              });
             PushPins = result;
@@ -290,11 +365,58 @@ namespace MyFriendsAround.WP7.ViewModel
                                                                   Messenger.Default.Send(message);
                                                               });
                 }
-                //
-                //update
-                ServiceAgent.GetFriends(this.GetFriendsResult);
+                else
+                {
+                    //update also the picture
+                    byte[] img = IsolatedStorageHelper.LoadFromLocalStorageArray("myphoto.jpg", "profiles");
+                    if (img != null)
+                    {
+                        ServiceAgent.PublishMyPicture(Identification.GetDeviceId(), img, new EventHandler<PublishLocationEventArgs>(PublishMyPictureResult));
+                    }
+                    else
+                    {
+                        //update friends list
+                        ServiceAgent.GetFriends(this.GetFriendsResult);
+                    }
+                }
             }
 
+        }
+
+        public void PublishMyPictureResult(object sender, PublishLocationEventArgs args)
+        {
+            //
+            if (args.Error != null)
+            {
+                DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                {
+                    IsBusy = false;
+                    var exception = new ExceptionPrompt();
+                    exception.Show(args.Error);
+                });
+            }
+            else
+            {
+                if (!args.IsSuccess)
+                {
+                    DispatcherHelper.CheckBeginInvokeOnUI(() =>
+                    {
+                        var message = new DialogMessage(
+                            "Communication error!", DialogMessageCallback)
+                        {
+                            Button = MessageBoxButton.OK,
+                            Caption = "Error!"
+                        };
+
+                        Messenger.Default.Send(message);
+                    });
+                }
+                else
+                {
+                    //update friends list
+                    ServiceAgent.GetFriends(this.GetFriendsResult);
+                }
+            }
         }
 
         private void DialogMessageCallback(MessageBoxResult result)
@@ -309,6 +431,7 @@ namespace MyFriendsAround.WP7.ViewModel
             }
         }
 
+        public ICommand MainLoadCommand { get; set; }
         public ICommand PublishLocationCommand { get; set; }
         public ICommand DisplayAboutCommand { get; set; }
         public ICommand NavigateToSettingsCommand { get; set; }
@@ -317,6 +440,9 @@ namespace MyFriendsAround.WP7.ViewModel
         public ICommand SaveMySettingsCommand { get; set; }
         public ICommand CancelMySettingsCommand { get; set; }
         public ICommand ChoosePhotoCommand { get; set; }
+        public ICommand CropSaveCommand { get; set; }
+        public ICommand CropCancelCommand { get; set; }
+        
         
 
 
@@ -408,7 +534,6 @@ namespace MyFriendsAround.WP7.ViewModel
                     return;
                 }
 
-                var oldValue = _PushPins;
                 _PushPins = value;
 
                 // Update bindings, no broadcast
@@ -420,6 +545,35 @@ namespace MyFriendsAround.WP7.ViewModel
         }
 
 
+        /// <summary>
+        /// The <see cref="MapZoom" /> property's name.
+        /// </summary>
+        public const string MapZoomPropertyName = "MapZoom";
+
+        private int _mapZoom = 1;
+
+        /// <summary>
+        /// Gets the MapZoom property.
+        /// </summary>
+        public int MapZoom
+        {
+            get
+            {
+                return _mapZoom;
+            }
+
+            set
+            {
+                if (_mapZoom == value)
+                {
+                    return;
+                }
+                _mapZoom = value;
+
+                // Update bindings, no broadcast
+                RaisePropertyChanged(MapZoomPropertyName);
+            }
+        }
 
 
         /// <summary>
@@ -487,5 +641,6 @@ namespace MyFriendsAround.WP7.ViewModel
                 RaisePropertyChanged(IsBusyPropertyName);
             }
         }
+
     }
 }

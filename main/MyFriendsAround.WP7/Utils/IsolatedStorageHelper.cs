@@ -45,11 +45,36 @@ namespace MyFriendsAround.WP7.Utils
                 isoFile.CreateDirectory(imageFolder);
             }
             string filePath = Path.Combine(imageFolder, imageFileName);
+            if (!isoFile.FileExists(filePath))
+            {
+                return null;
+            }
             using (var imageStream = isoFile.OpenFile(filePath, FileMode.Open, FileAccess.Read))
             {
                 var imageSource = PictureDecoder.DecodeJpeg(imageStream);
                 return imageSource;
             }
+        }
+
+        public static byte[] LoadFromLocalStorageArray(string imageFileName, string imageFolder)
+        {
+            var isoFile = IsolatedStorageFile.GetUserStoreForApplication();
+            if (!isoFile.DirectoryExists(imageFolder))
+            {
+                isoFile.CreateDirectory(imageFolder);
+            }
+            string filePath = Path.Combine(imageFolder, imageFileName);
+            if (!isoFile.FileExists(filePath))
+            {
+                return null;
+            }
+            using (var imageStream = isoFile.OpenFile(filePath, FileMode.Open, FileAccess.Read))
+            {
+                byte[] buffer = new byte[imageStream.Length];
+                imageStream.Read(buffer, 0, buffer.Length);
+                return buffer;
+            }
+            return null;
         }
     }
 }

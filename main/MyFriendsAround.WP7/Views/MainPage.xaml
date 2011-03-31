@@ -36,13 +36,38 @@
                 <Image Source="{Binding PinSource}" />
             </Grid>
         </ControlTemplate>
+        <ControlTemplate x:Key="PushpinControlTemplate2"
+                         TargetType="my:Pushpin">
+            <Grid x:Name="ContentGrid">
+                <StackPanel Orientation="Vertical">
+                    <Grid Background="{TemplateBinding Background}"
+                          HorizontalAlignment="Left"
+                          MinHeight="10"
+                          MinWidth="29">
+                        <Image x:Name="imgFriend"
+                               Source="{Binding PinImageUrl, Mode=OneWay}"
+                               Margin="2, 2, 2, 24" Width="48" Height="48"
+                               Stretch="Fill">
+                        </Image>
+                        <TextBlock HorizontalAlignment="Left" Text="{Binding PinUserName}" VerticalAlignment="Bottom"
+                                         Margin="1" Width="48" Height="24" />
+                    </Grid>
+
+                    <Polygon Fill="{TemplateBinding Background}"
+                             Points="0,0 29,0 0,29"
+                             Width="29"
+                             Height="29"
+                             HorizontalAlignment="Left" />
+                </StackPanel>
+            </Grid>
+        </ControlTemplate>
     </phone:PhoneApplicationPage.Resources>
 
-    <!--<i:Interaction.Triggers>
+    <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <cmd:EventToCommand Command="{Binding RefreshFriendsCommand}" />
+            <cmd:EventToCommand Command="{Binding MainLoadCommand}" />
         </i:EventTrigger>
-    </i:Interaction.Triggers>-->
+    </i:Interaction.Triggers>
     
     <Grid x:Name="LayoutRoot"
           Background="Transparent">
@@ -71,28 +96,24 @@
             </Button>-->
 
             <my:Map x:Name="map"
-                    HorizontalAlignment="Stretch"
+                    CredentialsProvider="AkCiPfQt9YM0cCkZlltdR3mnFQRkV41l4f-eXFmf3qcBBhBC-EkvD8MuazOkMnE_"
+                    HorizontalAlignment="Stretch" ZoomBarVisibility="Visible"
                     Margin="6,0,6,0"
                     VerticalAlignment="Stretch"
-                    Center="{Binding Path=MapCenter, Mode=TwoWay}">
+                    Center="{Binding Path=MapCenter, Mode=TwoWay}"
+                    ZoomLevel="{Binding Path=MapZoom, Mode=TwoWay}"
+                    >
                 <my:MapItemsControl ItemsSource="{Binding PushPins}">
                     <my:MapItemsControl.ItemTemplate>
                         <DataTemplate>
                             <my:Pushpin Location="{Binding Location}"
-                                        Template="{StaticResource PushpinControlTemplate1}">
+                                        Background="{StaticResource PhoneAccentBrush}"
+                                        Template="{StaticResource PushpinControlTemplate2}">
                             </my:Pushpin>
                         </DataTemplate>
                     </my:MapItemsControl.ItemTemplate>
                 </my:MapItemsControl>
             </my:Map>
-            <toolkit:PerformanceProgressBar HorizontalAlignment="Left"
-                                            Margin="0,-151,0,0"
-                                            Name="performanceProgressBar1"
-                                            VerticalAlignment="Top"
-                                            Height="18"
-                                            Width="480"
-                                            ActualIsIndeterminate="{Binding Path=IsBusy}"
-                                            IsIndeterminate="{Binding Path=IsBusy}" />
         </Grid>
 
 
@@ -107,7 +128,7 @@
             <TextBlock x:Name="ApplicationTitle"
                        Margin="12, 12, 0, 0"
                        Text="{Binding ApplicationTitle}"
-                       Foreground="#00fffc"
+                       Foreground="{StaticResource PhoneAccentBrush}"
                        Style="{StaticResource PhoneTextNormalStyle}" />
             <Grid Margin="0,6,6,6"
                   Height="80">
@@ -118,9 +139,9 @@
                       Opacity="1"
                       >
                     <Image x:Name="imgMine"
-                           Source="{Binding MyPicture}">
+                           Source="{Binding MyPicture, Mode=OneWay}" Margin="0" Stretch="Fill" >
                     </Image>
-                    <Border Background="#00fffc"
+                    <Border Background="{StaticResource PhoneAccentBrush}"
                             Width="80"
                             Height="25"
                             HorizontalAlignment="Stretch"
@@ -133,10 +154,18 @@
                                    HorizontalAlignment="Left"
                                    VerticalAlignment="Center"
                                    Margin="2"
-                                   Text="{Binding MyName}" />
+                                   Text="{Binding MyName, Mode=OneWay}" />
                     </Border>
                 </Grid>
 
+                <toolkit:PerformanceProgressBar HorizontalAlignment="Left"
+                                                Margin="0,0,0,0"
+                                                Name="performanceProgressBar1"
+                                                VerticalAlignment="Top"
+                                                Height="18"
+                                                Width="480"
+                                                ActualIsIndeterminate="{Binding Path=IsBusy}"
+                                                IsIndeterminate="{Binding Path=IsBusy}" />
             </Grid>
 
         </Grid>

@@ -15,6 +15,8 @@
 */
 
 using MyFriendsAround.WP7.Helpers.Navigation;
+using NetworkDetection;
+
 namespace MyFriendsAround.WP7.ViewModel
 {
     /// <summary>

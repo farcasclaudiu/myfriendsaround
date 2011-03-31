@@ -63,6 +63,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>MyFriends.Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entities\PictureInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
