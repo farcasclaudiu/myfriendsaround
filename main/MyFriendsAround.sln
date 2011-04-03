@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFriendsAround.Web", "MyFriendsAround.Web\MyFriendsAround.Web.csproj", "{41FDB0B4-0F93-4D1C-99C1-57F4A7E7EF3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFriendsAround.Web.Tests", "MyFriendsAround.Web.Tests\MyFriendsAround.Web.Tests.csproj", "{9FBA5EA7-7308-4B39-ADE9-DF2EB28C116F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFriendsAround.Common", "MyFriendsAround.Common\MyFriendsAround.Common.csproj", "{80664694-C63F-4653-B3FC-617AEC468B3C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFriendsAround.Data", "MyFriendsAround.Data\MyFriendsAround.Data.csproj", "{C3D31B22-BFF4-4DF1-A1EC-C8F158DEEB33}"
@@ -64,21 +62,6 @@ Global
 		{41FDB0B4-0F93-4D1C-99C1-57F4A7E7EF3D}.Tests|Mixed Platforms.ActiveCfg = Tests|Any CPU
 		{41FDB0B4-0F93-4D1C-99C1-57F4A7E7EF3D}.Tests|Mixed Platforms.Build.0 = Tests|Any CPU
 		{41FDB0B4-0F93-4D1C-99C1-57F4A7E7EF3D}.Tests|x86.ActiveCfg = Tests|Any CPU
-		{9FBA5EA7-7308-4B39-ADE9-DF2EB28C116F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9FBA5EA7-7308-4B39-ADE9-DF2EB28C116F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9FBA5EA7-7308-4B39-ADE9-DF2EB28C116F}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{9FBA5EA7-7308-4B39-ADE9-DF2EB28C116F}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{9FBA5EA7-7308-4B39-ADE9-DF2EB28C116F}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{9FBA5EA7-7308-4B39-ADE9-DF2EB28C116F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9FBA5EA7-7308-4B39-ADE9-DF2EB28C116F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9FBA5EA7-7308-4B39-ADE9-DF2EB28C116F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{9FBA5EA7-7308-4B39-ADE9-DF2EB28C116F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{9FBA5EA7-7308-4B39-ADE9-DF2EB28C116F}.Release|x86.ActiveCfg = Release|Any CPU
-		{9FBA5EA7-7308-4B39-ADE9-DF2EB28C116F}.Tests|Any CPU.ActiveCfg = Tests|Any CPU
-		{9FBA5EA7-7308-4B39-ADE9-DF2EB28C116F}.Tests|Any CPU.Build.0 = Tests|Any CPU
-		{9FBA5EA7-7308-4B39-ADE9-DF2EB28C116F}.Tests|Mixed Platforms.ActiveCfg = Tests|Any CPU
-		{9FBA5EA7-7308-4B39-ADE9-DF2EB28C116F}.Tests|Mixed Platforms.Build.0 = Tests|Any CPU
-		{9FBA5EA7-7308-4B39-ADE9-DF2EB28C116F}.Tests|x86.ActiveCfg = Tests|Any CPU
 		{80664694-C63F-4653-B3FC-617AEC468B3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{80664694-C63F-4653-B3FC-617AEC468B3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80664694-C63F-4653-B3FC-617AEC468B3C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
