@@ -21,6 +21,7 @@ using MyFriendsAround.WP7.Utils;
 using GalaSoft.MvvmLight.Threading;
 using MyFriendsAround.WP7.Views;
 using NetworkDetection;
+using MyFriendsAround.WP7.Service;
 
 
 namespace MyFriendsAround.WP7
@@ -49,6 +50,15 @@ namespace MyFriendsAround.WP7
 
             //register ViewModelLocator
             Container.Instance.RegisterInstance(typeof(ViewModelLocator), "ViewModelLocator");
+            Container.Instance.RegisterInstance<ILocationService>( new LocationService(), "LocationService");
+        }
+
+
+        public static ILocationService LocationService
+        {
+            get {
+                return Container.Instance.Resolve<ILocationService>("LocationService");
+            }
         }
 
         // Code to execute when the application is launching (eg, from Start)

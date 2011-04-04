@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Device.Location;
 using System.Linq;
 using System.Text;
+using MyFriendsAround.WP7.Model;
 
 namespace MyFriendsAround.WP7.ViewModel
 {
