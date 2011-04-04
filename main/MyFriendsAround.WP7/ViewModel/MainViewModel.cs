@@ -69,6 +69,8 @@ namespace MyFriendsAround.WP7.ViewModel
             CropCancelCommand = new RelayCommand(() => CropCancel());
             MapViewChangedCommand = new RelayCommand<LocationRect>(boundRectangle => MapViewChanged(boundRectangle));
             ShowMyLocationCommand = new RelayCommand(() => ShowMyLocation());
+            MapZoomInCommand = new RelayCommand(() => MapZoomIn());
+            MapZoomOutCommand = new RelayCommand(() => MapZoomOut());
 
             if (IsInDesignMode)
             {
@@ -87,6 +89,24 @@ namespace MyFriendsAround.WP7.ViewModel
 
             //init GPS
             InitGps();
+        }
+
+        private void MapZoomOut()
+        {
+            //
+            if(MapZoom<22)
+            {
+                MapZoom++;
+            }
+        }
+
+        private void MapZoomIn()
+        {
+            //
+            if (MapZoom >2 )
+            {
+                MapZoom--;
+            }
         }
 
 
@@ -286,12 +306,12 @@ namespace MyFriendsAround.WP7.ViewModel
         /// The <see cref="MyPicture" /> property's name.
         /// </summary>
         public const string MyPicturePropertyName = "MyPicture";
-        private BitmapSource _myPicture = new BitmapImage(new Uri("/icons/anonymousIcon.png", UriKind.RelativeOrAbsolute));
+        private ImageSource _myPicture = new BitmapImage(new Uri("/icons/anonymousIcon.png", UriKind.RelativeOrAbsolute));
 
         /// <summary>
         /// Gets the MyPicture property.
         /// </summary>
-        public BitmapSource MyPicture
+        public ImageSource MyPicture
         {
             get
             {
@@ -586,6 +606,8 @@ namespace MyFriendsAround.WP7.ViewModel
         public ICommand CropSaveCommand { get; set; }
         public ICommand CropCancelCommand { get; set; }
         public ICommand MapViewChangedCommand { get; set; }
+        public ICommand MapZoomInCommand { get; set; }
+        public ICommand MapZoomOutCommand { get; set; }
 
         #endregion
 
