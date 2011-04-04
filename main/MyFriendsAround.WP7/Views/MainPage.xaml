@@ -18,14 +18,17 @@
                             d:DesignHeight="768"
                             shell:SystemTray.IsVisible="True"
                             DataContext="{Binding Main, Source={StaticResource Locator}}"
+                            d:DataContext="{Binding Main, Source={StaticResource Locator}}"
                             xmlns:my="clr-namespace:Microsoft.Phone.Controls.Maps;assembly=Microsoft.Phone.Controls.Maps"
                             xmlns:Preview="clr-namespace:Phone7.Fx.Preview;assembly=Phone7.Fx.Preview"
                             xmlns:binding="clr-namespace:Coding4Fun.Phone.Controls.Binding;assembly=Coding4Fun.Phone.Controls"
-                            xmlns:Core="clr-namespace:Microsoft.Phone.Controls.Maps.Core;assembly=Microsoft.Phone.Controls.Maps">
+                            xmlns:Core="clr-namespace:Microsoft.Phone.Controls.Maps.Core;assembly=Microsoft.Phone.Controls.Maps"
+                            xmlns:conv="clr-namespace:MyFriendsAround.WP7.Helpers.Converters">
 
     <!--LayoutRoot contains the root grid where all other page content is placed-->
 
     <phone:PhoneApplicationPage.Resources>
+        <conv:MyImageConverter x:Key="myImageConverter" />
         <ControlTemplate x:Key="PushpinControlTemplate1"
                          TargetType="my:Pushpin">
             <Grid Height="24"
@@ -44,7 +47,7 @@
                     <Grid Background="{TemplateBinding Background}"
                           HorizontalAlignment="Left">
                         <Image x:Name="imgFriend"
-                               Source="{Binding PinImageUrl, Mode=OneWay}"
+                               Source="{Binding PinImageUrl, Mode=OneWay, Converter={StaticResource imageCacheConverter}}"
                                Margin="2, 2, 2, 24"
                                Width="48"
                                Height="48"
@@ -98,22 +101,9 @@
               Grid.RowSpan="2"
               Margin="0">
 
-            <!--<Button Content="Publish"
-                    HorizontalAlignment="Left" Margin="6,0,0,6" Name="btnPublishLocation"
-                    Width="468"
-                    Height="72"
-                    VerticalAlignment="Bottom">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="Click">
-                        <cmd:EventToCommand Command="{Binding PublishLocationCommand}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </Button>-->
-
             <my:Map x:Name="map"
                     CredentialsProvider="AkCiPfQt9YM0cCkZlltdR3mnFQRkV41l4f-eXFmf3qcBBhBC-EkvD8MuazOkMnE_"
                     HorizontalAlignment="Stretch"
-                    ZoomBarVisibility="Visible"
                     Margin="6,0,6,0"
                     VerticalAlignment="Stretch"
                     Center="{Binding Path=MapCenter, Mode=TwoWay}"
@@ -151,24 +141,36 @@
 
                 <StackPanel HorizontalAlignment="Left"
                             VerticalAlignment="Stretch">
-                        <Image Source="/icons/appbar.add.rest.png"
-                               Margin="0"
-                               Width="64"
-                               Height="64"
-                               VerticalAlignment="Top"
-                               HorizontalAlignment="Left">
+                    <Image Source="/icons/appbar.add.rest.png"
+                           Margin="0"
+                           Width="64"
+                           Height="64"
+                           VerticalAlignment="Top"
+                           HorizontalAlignment="Left">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="MouseLeftButtonDown">
                                 <cmd:EventToCommand Command="{Binding MapZoomOutCommand}" />
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </Image>
-                        <Image Source="/icons/appbar.minus.rest.png"
-                               Margin="0"
-                               Width="64"
-                               Height="64"
-                               VerticalAlignment="Bottom"
-                               HorizontalAlignment="Left">
+                    <Slider Orientation="Vertical"
+                            Minimum="1"
+                            Maximum="22"
+                            Value="{Binding MapZoom, Mode=TwoWay}"
+                            Height="300">
+                        <!--<i:Interaction.Triggers>
+                            <i:EventTrigger EventName="ValueChanged">
+                                <cmd:EventToCommand Command="{Binding MapZoomChangedCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>-->
+                    </Slider>
+
+                    <Image Source="/icons/appbar.minus.rest.png"
+                           Margin="0"
+                           Width="64"
+                           Height="64"
+                           VerticalAlignment="Bottom"
+                           HorizontalAlignment="Left">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="MouseLeftButtonDown">
                                 <cmd:EventToCommand Command="{Binding MapZoomInCommand}" />
@@ -186,10 +188,12 @@
         <Grid x:Name="TitlePanel"
               Grid.Row="0"
               Margin="0"
-              Background="Black"
+              Background="Transparent"
               VerticalAlignment="Top"
               HorizontalAlignment="Stretch"
-              Opacity="0.8">
+              Opacity="1">
+            <Rectangle Fill="Black"
+                       Opacity="0.7"></Rectangle>
             <TextBlock x:Name="ApplicationTitle"
                        Margin="12, 12, 0, 0"
                        Text="{Binding ApplicationTitle}"
@@ -200,13 +204,18 @@
                 <Grid Width="80"
                       Height="80"
                       HorizontalAlignment="Right"
-                      Background="Transparent"
+                      Background="{StaticResource PhoneAccentBrush}"
                       Opacity="1">
                     <Image x:Name="imgMine"
                            Opacity="1"
-                           Source="{Binding MyPicture, Mode=OneWay}"
-                           Margin="0"
+                           Source="{Binding SelectedFriend, Path=SelectedFriend.PinImageUrl, Converter={StaticResource imageCacheConverter}}"
+                           Margin="1"
                            Stretch="Fill">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                <cmd:EventToCommand Command="{Binding ShowSelectFriendCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                     </Image>
                     <Border Background="{StaticResource PhoneAccentBrush}"
                             Width="80"
@@ -222,7 +231,7 @@
                                    HorizontalAlignment="Left"
                                    VerticalAlignment="Center"
                                    Margin="2"
-                                   Text="{Binding MyName, Mode=OneWay}"
+                                   Text="{Binding SelectedFriend, Path=SelectedFriend.PinUserName}"
                                    Opacity="1" />
                     </Border>
                 </Grid>
@@ -239,19 +248,87 @@
 
         </Grid>
 
+        <Grid Background="Transparent"
+              VerticalAlignment="Stretch"
+              Grid.RowSpan="2"
+              Visibility="{Binding IsSelectFriend, Converter={StaticResource BooleanToVisibilityConverter1}}">
+            <Rectangle Fill="Black"
+                       Opacity="0.7">
+            </Rectangle>
+            <StackPanel Margin="20"
+                        Opacity="1"
+                        Background="Black"
+                        VerticalAlignment="Stretch"
+                        HorizontalAlignment="Stretch"
+                        Width="Auto"
+                        Height="Auto">
+                <TextBlock Text="Select your friend"
+                           Style="{StaticResource PhoneTextNormalStyle}"
+                           TextAlignment="Center"
+                           FontSize="24"
+                           Padding="10"
+                           Margin="0" />
+                <ListBox ItemsSource="{Binding PushPins, Mode=OneWay}"
+                         HorizontalAlignment="Stretch"
+                         VerticalAlignment="Stretch"
+                         Margin="0"
+                         Width="Auto"
+                         Height="675"
+                         Background="Black"
+                         Opacity="1"
+                         SelectedItem="{Binding SelectedFriend, Mode=TwoWay}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Stretch"
+                                        Margin="4">
+                                <Image Source="{Binding PinImageUrl, Mode=OneWay, Converter={StaticResource imageCacheConverter}}"
+                                       Width="96"
+                                       Height="96" />
+                                <StackPanel Margin="10, 0,0,0">
+                                    <TextBlock Text="{Binding PinUserName}"
+                                               FontSize="24" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Last update:"
+                                                   FontSize="20">
+                                        </TextBlock>
+                                        <TextBlock Text="{Binding PinLastUpdated}"
+                                                   FontSize="20"
+                                                   Margin="10, 0, 0, 0" />
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Distance:"
+                                                   FontSize="20">
+                                        </TextBlock>
+                                        <TextBlock Text="{Binding PinDistance}"
+                                                   FontSize="20"
+                                                   Margin="10, 0, 0, 0" />
+                                        <TextBlock Text="Km"
+                                                   Margin="5, 0, 0, 0"
+                                                   FontSize="20">
+                                        </TextBlock>
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+        </Grid>
+
         <Preview:BindableApplicationBar x:Name="AppBar"
                                         BarOpacity="0.8">
             <Preview:BindableApplicationBarIconButton Command="{Binding ShowMyLocationCommand}"
                                                       IconUri="/icons/appbar.location.png"
-                                                      Text="{Binding AppBarTextMyLocation}"
-                                                      IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertValueConverter1}}" />
+                                                      Text="{Binding AppBarTextMyLocation}" />
             <Preview:BindableApplicationBarIconButton Command="{Binding RefreshFriendsCommand}"
                                                       IconUri="/icons/appbar.sync.rest.png"
                                                       Text="{Binding AppBarTextRefresh}"
                                                       IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertValueConverter1}}" />
             <Preview:BindableApplicationBarIconButton Command="{Binding PublishLocationCommand}"
                                                       IconUri="/icons/appbar.publish.png"
-                                                      Text="{Binding AppBarTextPublish}" />
+                                                      Text="{Binding AppBarTextPublish}"
+                                                      IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertValueConverter1}}" />
             <Preview:BindableApplicationBarIconButton Command="{Binding NavigateToSettingsCommand}"
                                                       IconUri="/icons/appbar.feature.settings.rest.png"
                                                       Text="{Binding AppBarTextSettings}" />

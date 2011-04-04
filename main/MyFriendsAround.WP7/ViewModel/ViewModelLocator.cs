@@ -15,6 +15,7 @@
 */
 
 using MyFriendsAround.WP7.Helpers.Navigation;
+using MyFriendsAround.WP7.Utils;
 using NetworkDetection;
 
 namespace MyFriendsAround.WP7.ViewModel
@@ -85,7 +86,7 @@ namespace MyFriendsAround.WP7.ViewModel
         {
             get
             {
-                MainViewModel mainViewModel = GetViewModel<MainViewModel>("MainViewModel");
+                MainViewModel mainViewModel = GetViewModel<MainViewModel>(Constants.VM_MAIN);
                 return mainViewModel;
             }
         }
@@ -97,7 +98,7 @@ namespace MyFriendsAround.WP7.ViewModel
         {
             get
             {
-                SettingsViewModel aboutViewModel = GetViewModel<SettingsViewModel>("SettingsViewModel");
+                SettingsViewModel aboutViewModel = GetViewModel<SettingsViewModel>(Constants.VM_SETTINGS);
                 return aboutViewModel;
             }
         }
@@ -108,9 +109,9 @@ namespace MyFriendsAround.WP7.ViewModel
         /// </summary>
         public void Cleanup()
         {
-            MainViewModel mainViewModel = GetViewModel<MainViewModel>("MainViewModel");
+            MainViewModel mainViewModel = GetViewModel<MainViewModel>(Constants.VM_MAIN);
             mainViewModel.Cleanup();
-            SettingsViewModel aboutViewModel = GetViewModel<SettingsViewModel>("SettingsViewModel");
+            SettingsViewModel aboutViewModel = GetViewModel<SettingsViewModel>(Constants.VM_SETTINGS);
             aboutViewModel.Cleanup();
         }
 
@@ -118,11 +119,10 @@ namespace MyFriendsAround.WP7.ViewModel
 
         #region Local Helpers
 
-        private T GetViewModel<T>(string key) where T : ViewModelBase
+        public static T GetViewModel<T>(string key) where T : ViewModelBase
         {
             // Create a new view model
             T vm = Container.Instance.Resolve<T>(key);
-
             //Assign the Context from PageNavigation to Context property of the ViewModelBase
             vm.Context = vm.PageNav.CurrentContext;
 

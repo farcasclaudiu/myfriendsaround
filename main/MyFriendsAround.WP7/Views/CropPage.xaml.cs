@@ -17,6 +17,7 @@ using Microsoft.Phone.Tasks;
 using MyFriendsAround.WP7.Utils;
 using MyFriendsAround.WP7.ViewModel;
 using NetworkDetection;
+using System.Threading;
 
 namespace MyFriendsAround.WP7.Views
 {
@@ -53,7 +54,7 @@ namespace MyFriendsAround.WP7.Views
 
         private void NavigateBack()
         {
-            Container.Instance.Resolve<MainViewModel>("MainViewModel").CropCancel();
+            Container.Instance.Resolve<MainViewModel>(Constants.VM_MAIN).CropCancel();
         }
 
         void task_Completed(object sender, PhotoResult e)
@@ -158,12 +159,7 @@ namespace MyFriendsAround.WP7.Views
                 byte[] _imageBytes = new byte[stream.Length];
                 stream.Read(_imageBytes, 0, _imageBytes.Length);
                 //save
-                IsolatedStorageHelper.SaveToLocalStorage("myphoto.jpg", "profiles", _imageBytes);
-                //
-                //BitmapImage bi = new BitmapImage();
-                //stream.Seek(0, SeekOrigin.Begin);
-                //bi.SetSource(stream);
-                Container.Instance.Resolve<MainViewModel>("MainViewModel").MyPicture = wbm;
+                IsolatedStorageHelper.SaveToLocalStorage(Constants.MYPICTURE_FILE_NAME, "profiles", _imageBytes);
             }
         }
 

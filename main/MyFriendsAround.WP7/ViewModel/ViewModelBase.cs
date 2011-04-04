@@ -15,8 +15,6 @@ namespace MyFriendsAround.WP7.ViewModel
     public class ViewModelBase : GalaSoft.MvvmLight.ViewModelBase
     {
 
-        public bool IsLoaded { get; set; }
-
         private object context;
         public object Context
         {

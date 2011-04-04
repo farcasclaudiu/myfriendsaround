@@ -5,7 +5,7 @@
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:binding="clr-namespace:Coding4Fun.Phone.Controls.Binding;assembly=Coding4Fun.Phone.Controls" xmlns:Preview="clr-namespace:Phone7.Fx.Preview;assembly=Phone7.Fx.Preview" xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP7" FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:binding="clr-namespace:Coding4Fun.Phone.Controls.Binding;assembly=Coding4Fun.Phone.Controls" xmlns:Preview="clr-namespace:Phone7.Fx.Preview;assembly=Phone7.Fx.Preview" xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Extras.WP7" xmlns:conv="clr-namespace:MyFriendsAround.WP7.Helpers.Converters" FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait" Orientation="Portrait"
@@ -13,6 +13,11 @@
     mc:Ignorable="d" d:DesignHeight="768" d:DesignWidth="480"
     shell:SystemTray.IsVisible="True">
 
+
+    <phone:PhoneApplicationPage.Resources>
+        <conv:MyImageConverter x:Key="myImageConverter" />
+    </phone:PhoneApplicationPage.Resources>
+    
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <cmd:EventToCommand Command="{Binding MainLoadCommand}" />
@@ -47,7 +52,7 @@
             <TextBox Height="67"
                      HorizontalAlignment="Stretch"     
                      Name="txtMyName"
-                     Text="{Binding Path=MyName, Mode=TwoWay}"
+                     Text="{Binding MyName, Mode=TwoWay}"
                      VerticalAlignment="Top"
                      binding:TextBoxBinding.UpdateSourceOnChange="True" />
                 <TextBlock Text="My Picture"
@@ -65,7 +70,8 @@
                            VerticalAlignment="Stretch"
                            Stretch="Uniform"
                            Margin="1"
-                           Source="{Binding MyPicture, Mode=TwoWay}"></Image>
+                           Source="{Binding MyPicture, Mode=OneWay, Converter={StaticResource myImageConverter}}">
+                    </Image>
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
                             <cmd:EventToCommand 
@@ -76,7 +82,7 @@
             </StackPanel>
         </Grid>
 
-        <Preview:BindableApplicationBar x:Name="AppBar"
+        <!--<Preview:BindableApplicationBar x:Name="AppBar"
                                         BarOpacity="0.8">
             <Preview:BindableApplicationBarIconButton Command="{Binding SaveMySettingsCommand}"
                                                       IconUri="/Toolkit.Content/ApplicationBar.Check.png"
@@ -85,7 +91,7 @@
             <Preview:BindableApplicationBarIconButton Command="{Binding CancelMySettingsCommand}"
                                                       IconUri="/Toolkit.Content/ApplicationBar.Cancel.png"
                                                       Text="{Binding AppBarTextCancelSettings}" />
-        </Preview:BindableApplicationBar>
+        </Preview:BindableApplicationBar>-->
     </Grid>
  
 
