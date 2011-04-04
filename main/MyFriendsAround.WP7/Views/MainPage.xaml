@@ -144,31 +144,41 @@
 
             <Grid  HorizontalAlignment="Right"
                    VerticalAlignment="Center"
-                   Width="64"
-                   >
+                   Width="64">
                 <Rectangle RadiusX="10"
                            RadiusY="10"
                            Fill="Black"
                            Opacity="0.3"
-                           Margin="0,0,-20,0"
-                           >
+                           Margin="0,0,-20,0">
                 </Rectangle>
 
 
-                <StackPanel HorizontalAlignment="Left" VerticalAlignment="Stretch">
-                    <Image Source="/icons/appbar.location.png"
-                           Margin="0"
-                           Width="64"
-                           Height="64"
-                           VerticalAlignment="Top"
-                           HorizontalAlignment="Left"
-                           />
-                    <Image Source="/icons/appbar.location.png"
-                           Margin="0"
-                           Width="64"
-                           Height="64"
-                           VerticalAlignment="Bottom"
-                           HorizontalAlignment="Left" />
+                <StackPanel HorizontalAlignment="Left"
+                            VerticalAlignment="Stretch">
+                        <Image Source="/icons/appbar.add.rest.png"
+                               Margin="0"
+                               Width="64"
+                               Height="64"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Left">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                <cmd:EventToCommand Command="{Binding MapZoomOutCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Image>
+                        <Image Source="/icons/appbar.minus.rest.png"
+                               Margin="0"
+                               Width="64"
+                               Height="64"
+                               VerticalAlignment="Bottom"
+                               HorizontalAlignment="Left">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                <cmd:EventToCommand Command="{Binding MapZoomInCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Image>
 
                 </StackPanel>
             </Grid>
@@ -200,8 +210,7 @@
                            Opacity="1"
                            Source="{Binding MyPicture, Mode=OneWay}"
                            Margin="0"
-                           Stretch="Fill"
-                           >
+                           Stretch="Fill">
                     </Image>
                     <Border Background="{StaticResource PhoneAccentBrush}"
                             Width="80"
