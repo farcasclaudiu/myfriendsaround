@@ -65,7 +65,7 @@
                            VerticalAlignment="Stretch"
                            Stretch="Uniform"
                            Margin="1"
-                           Source="{Binding MyPicture}"></Image>
+                           Source="{Binding MyPicture, Mode=TwoWay}"></Image>
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="Click">
                             <cmd:EventToCommand 
