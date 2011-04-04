@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroIoc.Core", "Libs\Micro
 EndProject
 Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "MyFriendsAroundWindowsAzure", "MyFriendsAroundWindowsAzure\MyFriendsAroundWindowsAzure.ccproj", "{C656965D-5A6E-4BD4-9945-9C906B89128D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPImageCaching", "Libs\WPImageCaching\WPImageCaching.csproj", "{17158FD9-80FD-49C1-9E3F-C5633602A4D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -307,6 +309,26 @@ Global
 		{C656965D-5A6E-4BD4-9945-9C906B89128D}.Tests|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{C656965D-5A6E-4BD4-9945-9C906B89128D}.Tests|Mixed Platforms.Build.0 = Release|Any CPU
 		{C656965D-5A6E-4BD4-9945-9C906B89128D}.Tests|x86.ActiveCfg = Release|Any CPU
+		{17158FD9-80FD-49C1-9E3F-C5633602A4D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17158FD9-80FD-49C1-9E3F-C5633602A4D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17158FD9-80FD-49C1-9E3F-C5633602A4D9}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{17158FD9-80FD-49C1-9E3F-C5633602A4D9}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{17158FD9-80FD-49C1-9E3F-C5633602A4D9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{17158FD9-80FD-49C1-9E3F-C5633602A4D9}.GPS_EMULATOR|Any CPU.ActiveCfg = Release|Any CPU
+		{17158FD9-80FD-49C1-9E3F-C5633602A4D9}.GPS_EMULATOR|Any CPU.Build.0 = Release|Any CPU
+		{17158FD9-80FD-49C1-9E3F-C5633602A4D9}.GPS_EMULATOR|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{17158FD9-80FD-49C1-9E3F-C5633602A4D9}.GPS_EMULATOR|Mixed Platforms.Build.0 = Release|Any CPU
+		{17158FD9-80FD-49C1-9E3F-C5633602A4D9}.GPS_EMULATOR|x86.ActiveCfg = Release|Any CPU
+		{17158FD9-80FD-49C1-9E3F-C5633602A4D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17158FD9-80FD-49C1-9E3F-C5633602A4D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17158FD9-80FD-49C1-9E3F-C5633602A4D9}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{17158FD9-80FD-49C1-9E3F-C5633602A4D9}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{17158FD9-80FD-49C1-9E3F-C5633602A4D9}.Release|x86.ActiveCfg = Release|Any CPU
+		{17158FD9-80FD-49C1-9E3F-C5633602A4D9}.Tests|Any CPU.ActiveCfg = Release|Any CPU
+		{17158FD9-80FD-49C1-9E3F-C5633602A4D9}.Tests|Any CPU.Build.0 = Release|Any CPU
+		{17158FD9-80FD-49C1-9E3F-C5633602A4D9}.Tests|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{17158FD9-80FD-49C1-9E3F-C5633602A4D9}.Tests|Mixed Platforms.Build.0 = Release|Any CPU
+		{17158FD9-80FD-49C1-9E3F-C5633602A4D9}.Tests|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -317,5 +339,6 @@ Global
 		{BF7316A8-A2C5-4176-8D7F-672AD12F474D} = {340549A1-45EA-4B49-B194-347C0078BAD8}
 		{B55A0F90-2B5A-4C4B-88F4-013AA1629866} = {340549A1-45EA-4B49-B194-347C0078BAD8}
 		{23F63AE9-A436-4B27-9113-4142C09ADD08} = {340549A1-45EA-4B49-B194-347C0078BAD8}
+		{17158FD9-80FD-49C1-9E3F-C5633602A4D9} = {340549A1-45EA-4B49-B194-347C0078BAD8}
 	EndGlobalSection
 EndGlobal

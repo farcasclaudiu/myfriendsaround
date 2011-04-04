@@ -157,6 +157,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\Converters\MyImageConverter.cs" />
     <Compile Include="Helpers\Navigation\IPageNavigation.cs" />
     <Compile Include="Helpers\Navigation\PageNavigation.cs" />
     <Compile Include="Service\ILocationService.cs" />
@@ -165,6 +166,8 @@
     <Compile Include="Service\LocationService.cs" />
     <Compile Include="Service\LocationStatusEventArgs.cs" />
     <Compile Include="Utils\ApplicationExtensions.cs" />
+    <Compile Include="Utils\Constants.cs" />
+    <Compile Include="Utils\Haversine.cs" />
     <Compile Include="Utils\IsolatedStorageHelper.cs" />
     <Compile Include="Utils\LittleWatson.cs">
       <SubType>Code</SubType>
@@ -279,6 +282,10 @@
     <ProjectReference Include="..\Libs\Phone7.Fx.Preview\Phone7.Fx.Preview.csproj">
       <Project>{B55A0F90-2B5A-4C4B-88F4-013AA1629866}</Project>
       <Name>Phone7.Fx.Preview</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Libs\WPImageCaching\WPImageCaching.csproj">
+      <Project>{17158FD9-80FD-49C1-9E3F-C5633602A4D9}</Project>
+      <Name>WPImageCaching</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />

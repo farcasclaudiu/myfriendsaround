@@ -90,7 +90,7 @@ namespace MyFriendsAround.WP7
         {
             SaveModel();
             //
-            ViewModelLocator locator = Container.Instance.Resolve<ViewModelLocator>();
+            ViewModelLocator locator = Container.Instance.Resolve<ViewModelLocator>("ViewModelLocator");
             locator.Cleanup();
         }
 
@@ -101,24 +101,22 @@ namespace MyFriendsAround.WP7
             MainViewModel mainModel = this.RetrieveFromIsolatedStorage<MainViewModel>();
             if (mainModel != null)
             {
-                mainModel.IsLoaded = true;
                 mainModel.IsBusy = false;
-                Container.Instance.RegisterInstance<MainViewModel>(mainModel, "MainViewModel");
+                Container.Instance.RegisterInstance<MainViewModel>(mainModel, Constants.VM_MAIN);
             }
             else
             {
-                Container.Instance.RegisterInstance<MainViewModel>(new MainViewModel(), "MainViewModel");
+                Container.Instance.RegisterInstance<MainViewModel>(new MainViewModel(), Constants.VM_MAIN);
             }
             //
             SettingsViewModel settingsModel = this.RetrieveFromIsolatedStorage<SettingsViewModel>();
             if (settingsModel != null)
             {
-                settingsModel.IsLoaded = true;
-                Container.Instance.RegisterInstance<SettingsViewModel>(settingsModel, "SettingsViewModel");
+                Container.Instance.RegisterInstance<SettingsViewModel>(settingsModel, Constants.VM_SETTINGS);
             }
             else
             {
-                Container.Instance.RegisterInstance<SettingsViewModel>(new SettingsViewModel(), "SettingsViewModel");
+                Container.Instance.RegisterInstance<SettingsViewModel>(new SettingsViewModel(), Constants.VM_SETTINGS);
             }
 
         }
@@ -126,8 +124,8 @@ namespace MyFriendsAround.WP7
 
         private void SaveModel()
         {
-            this.SaveToIsolatedStorage<MainViewModel>(Container.Instance.Resolve<MainViewModel>("MainViewModel"));
-            this.SaveToIsolatedStorage<SettingsViewModel>(Container.Instance.Resolve<SettingsViewModel>("SettingsViewModel"));
+            this.SaveToIsolatedStorage<MainViewModel>(Container.Instance.Resolve<MainViewModel>(Constants.VM_MAIN));
+            this.SaveToIsolatedStorage<SettingsViewModel>(Container.Instance.Resolve<SettingsViewModel>(Constants.VM_SETTINGS));
         }
 
 

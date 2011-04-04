@@ -11,13 +11,13 @@ namespace MyFriendsAround.WP7.Service
     public static class ServiceAgent
     {
 
-        private static int _timeOut = 10;
+        private static int _timeOut = 15;
         public static string baseUrl;
 
         static ServiceAgent()
         {
-            //baseUrl = "http://myfriendsaround.cloudapp.net/myfriends";//live azure
-            baseUrl = "http://127.0.0.1:82/myfriends";//running in local azure emulator
+            baseUrl = "http://myfriendsaround.cloudapp.net/myfriends";//live azure
+            //baseUrl = "http://127.0.0.1:80/myfriends";//running in local azure emulator
             //baseUrl = "http://localhost.:55672/myfriends";//for local asp.net mvc use 
         }
 
