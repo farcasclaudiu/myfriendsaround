@@ -43,7 +43,7 @@ namespace GpsEmulator
             try
             {
                 // setup the GPS host service 
-                host = new ServiceHost(this, new Uri("http://localhost:8192/"));
+                host = new ServiceHost(this, new Uri("http://localhost:9192/"));
                 host.AddServiceEndpoint(typeof(IGpsEmulatorService), new BasicHttpBinding(BasicHttpSecurityMode.None), "GpsEmulator");
                 host.Open();
             }

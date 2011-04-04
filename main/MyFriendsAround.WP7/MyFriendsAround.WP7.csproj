@@ -159,6 +159,11 @@
     </Compile>
     <Compile Include="Helpers\Navigation\IPageNavigation.cs" />
     <Compile Include="Helpers\Navigation\PageNavigation.cs" />
+    <Compile Include="Service\ILocationService.cs" />
+    <Compile Include="Model\Location.cs" />
+    <Compile Include="Service\LocationChangedEventArgs.cs" />
+    <Compile Include="Service\LocationService.cs" />
+    <Compile Include="Service\LocationStatusEventArgs.cs" />
     <Compile Include="Utils\ApplicationExtensions.cs" />
     <Compile Include="Utils\IsolatedStorageHelper.cs" />
     <Compile Include="Utils\LittleWatson.cs">
@@ -258,9 +263,7 @@
     <Content Include="Toolkit.Content\ApplicationBar.Cancel.png" />
     <Content Include="Toolkit.Content\ApplicationBar.Check.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>

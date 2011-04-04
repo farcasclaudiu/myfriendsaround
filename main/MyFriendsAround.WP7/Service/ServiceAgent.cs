@@ -16,8 +16,8 @@ namespace MyFriendsAround.WP7.Service
 
         static ServiceAgent()
         {
-            baseUrl = "http://myfriendsaround.cloudapp.net/myfriends";//live azure
-            //baseUrl = "http://127.0.0.1:8086/myfriends";//running in local azure emulator
+            //baseUrl = "http://myfriendsaround.cloudapp.net/myfriends";//live azure
+            baseUrl = "http://127.0.0.1:82/myfriends";//running in local azure emulator
             //baseUrl = "http://localhost.:55672/myfriends";//for local asp.net mvc use 
         }
 

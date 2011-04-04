@@ -28,10 +28,10 @@
     <phone:PhoneApplicationPage.Resources>
         <ControlTemplate x:Key="PushpinControlTemplate1"
                          TargetType="my:Pushpin">
-            <Grid Height="32"
-                  Width="32"
-                  Margin="-16,-16,0,0">
-                <Ellipse Fill="#FFA3A3BE"
+            <Grid Height="24"
+                  Width="24"
+                  Margin="-12,-12,0,0">
+                <Ellipse Fill="#FF12A5C7"
                          Stroke="Black"
                          Margin="0" />
                 <Image Source="{Binding PinSource}" />
@@ -88,10 +88,6 @@
                             Template="{StaticResource PushpinControlTemplate2}">
                 </my:Pushpin>
             </DataTemplate>
-            <my:MapItemsControl x:Name="GroupAPins"
-                                ItemTemplate="{StaticResource LogoTemplate}"
-                                ItemsSource="{Binding PushPins}">
-            </my:MapItemsControl>
         </Grid.Resources>
 
 

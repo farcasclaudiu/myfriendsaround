@@ -32,6 +32,7 @@ using MyFriendsAround.WP7.Views;
 using NetworkDetection;
 using Newtonsoft.Json;
 using Microsoft.Phone.Tasks;
+using MyFriendsAround.WP7.Model;
 
 namespace MyFriendsAround.WP7.ViewModel
 {
@@ -55,6 +56,7 @@ namespace MyFriendsAround.WP7.ViewModel
         /// </summary>
         public MainViewModel()
         {
+            GpsLocation = Location.Unknown;
             //
             MainLoadCommand = new RelayCommand(() => MainLoad());
             PublishLocationCommand = new RelayCommand(() => PublishLocationAction());
@@ -112,39 +114,59 @@ namespace MyFriendsAround.WP7.ViewModel
 
         private void InitGps()
         {
-#if GPS_EMULATOR
-            _gpsWatcher = new GpsEmulatorClient.GeoCoordinateWatcher();
-#else
-            _gpsWatcher = new GeoCoordinateWatcher(GeoPositionAccuracy.High)
-                              {
-                                  MovementThreshold = 10
-                              };
-#endif
-            _gpsWatcher.PositionChanged += new EventHandler<GeoPositionChangedEventArgs<GeoCoordinate>>(watcher_PositionChanged);
-            _gpsWatcher.StatusChanged += new EventHandler<GeoPositionStatusChangedEventArgs>(watcher_StatusChanged);
-
-            //
-            _gpsWatcher.Start();
+            App.LocationService.LocationChanged += new EventHandler<LocationChangedEventArgs>(LocationService_LocationChanged);
+            App.LocationService.StatusChanged += new EventHandler<LocationStatusEventArgs>(LocationService_StatusChanged);
+            App.LocationService.Start();
         }
 
-        void watcher_StatusChanged(object sender, GeoPositionStatusChangedEventArgs e)
+        void LocationService_StatusChanged(object sender, LocationStatusEventArgs e)
         {
             GpsStatus = e.Status;
+        }
+
+        void LocationService_LocationChanged(object sender, LocationChangedEventArgs e)
+        {
+            if (e.Location != Location.Unknown)
+            {
+                GpsLocation = e.Location;
+
+                if (LastBoundRect!= null && LastBoundRect.Intersects(new LocationRect(
+                    new GeoCoordinate(GpsLocation.Latitude, GpsLocation.Longitude), 
+                    .5, 
+                    .5)))
+                {
+                    ObservableCollection<PushPinModel> _mynewlocation = new ObservableCollection<PushPinModel>();
+                    _mynewlocation.Add(new PushPinModel()
+                    {
+                        Location = new GeoCoordinate(GpsLocation.Latitude, GpsLocation.Longitude),
+                        PinUserName = "Me"
+                    });
+                    MyLocationPushPins = _mynewlocation;
+                }
+                else
+                {
+                    MyLocationPushPins = new ObservableCollection<PushPinModel>();
+                }
+            }
+
+            System.Diagnostics.Debug.WriteLine("watcher_PositionChanged + " + DateTime.Now.Second);
         }
 
         void watcher_PositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
         {
             if (e.Position.Location != GeoCoordinate.Unknown)
             {
-                GpsTimestamp = e.Position.Timestamp;
-                GpsLocation = e.Position.Location;
+                GpsLocation = new Location(
+                    e.Position.Location.Latitude,
+                    e.Position.Location.Longitude,
+                    e.Position.Timestamp);
 
-                if (LastBoundRect.Intersects(new LocationRect(GpsLocation, .5, .5)))
+                if (LastBoundRect!=null && LastBoundRect.Intersects(new LocationRect(e.Position.Location, .5, .5)))
                 {
                     ObservableCollection<PushPinModel> _mynewlocation = new ObservableCollection<PushPinModel>();
                     _mynewlocation.Add(new PushPinModel()
                                            {
-                                               Location = GpsLocation,
+                                               Location = new GeoCoordinate(GpsLocation.Latitude, GpsLocation.Longitude),
                                                PinUserName = "Me"
                                            });
                     MyLocationPushPins = _mynewlocation;
@@ -166,8 +188,6 @@ namespace MyFriendsAround.WP7.ViewModel
         #region Properties & Fields
 
         private PhotoChooserTask photoChooserTask;
-        private IGeoPositionWatcher<GeoCoordinate> _gpsWatcher;
-
 
         public string ApplicationTitle
         {
@@ -213,12 +233,12 @@ namespace MyFriendsAround.WP7.ViewModel
         /// </summary>
         public const string GpsLocationPropertyName = "GpsLocation";
 
-        private GeoCoordinate _gpsLocation = GeoCoordinate.Unknown;
+        private Location _gpsLocation = Location.Unknown;
 
         /// <summary>
         /// Gets the GpsLocation property.
         /// </summary>
-        public GeoCoordinate GpsLocation
+        public Location GpsLocation
         {
             get
             {
@@ -239,37 +259,7 @@ namespace MyFriendsAround.WP7.ViewModel
             }
         }
 
-
-        /// <summary>
-        /// The <see cref="GpsTimestamp" /> property's name.
-        /// </summary>
-        public const string GpsTimestampPropertyName = "GpsTimestamp";
-
-        private DateTimeOffset _gpsTimestamp = DateTimeOffset.MinValue;
-
-        /// <summary>
-        /// Gets the GpsTimestamp property.
-        /// </summary>
-        public DateTimeOffset GpsTimestamp
-        {
-            get
-            {
-                return _gpsTimestamp;
-            }
-
-            set
-            {
-                if (_gpsTimestamp == value)
-                {
-                    return;
-                }
-
-                _gpsTimestamp = value;
-
-                // Update bindings, no broadcast
-                RaisePropertyChanged(GpsTimestampPropertyName);
-            }
-        }
+        
 
         /// <summary>
         /// The <see cref="GpsStatus" /> property's name.
@@ -616,11 +606,11 @@ namespace MyFriendsAround.WP7.ViewModel
         private void ShowMyLocation()
         {
             //
-            if (GpsLocation != GeoCoordinate.Unknown &&
+            if (GpsLocation != Location.Unknown &&
                 GpsStatus == GeoPositionStatus.Ready
                 )
             {
-                MapCenter = GpsLocation;
+                MapCenter = new GeoCoordinate(GpsLocation.Latitude, GpsLocation.Longitude);
             }
         }
 
@@ -633,14 +623,20 @@ namespace MyFriendsAround.WP7.ViewModel
             //filter visible pushpins
             foreach (PushPinModel pushPin in PushPins)
             {
-                if (LastBoundRect.Intersects(new LocationRect(pushPin.Location, .5, .5)))
+                if (LastBoundRect!=null && LastBoundRect.Intersects(new LocationRect(
+                    new GeoCoordinate(pushPin.Location.Latitude, pushPin.Location.Longitude), 
+                    .5, .5)))
                 {
                     _newVisiblePushPins.Add(pushPin);
                 }
             }
             VisiblePushPins = _newVisiblePushPins;
             //
-            if (!LastBoundRect.Intersects(new LocationRect(GpsLocation, .5, .5)))
+            if (GpsLocation == Location.Unknown || 
+                LastBoundRect == null ||
+                !LastBoundRect.Intersects(new LocationRect(
+                new GeoCoordinate(GpsLocation.Latitude, GpsLocation.Longitude), 
+                .5, .5)))
             {
                 MyLocationPushPins = new ObservableCollection<PushPinModel>();
             }
@@ -809,7 +805,7 @@ namespace MyFriendsAround.WP7.ViewModel
 
         private void PublishLocationAction()
         {
-            if (GpsLocation != GeoCoordinate.Unknown)
+            if (GpsLocation != Location.Unknown)
             {
                 Friend myInfo = new Friend();
                 myInfo.Id = Identification.GetDeviceId();
@@ -947,7 +943,7 @@ namespace MyFriendsAround.WP7.ViewModel
             // Clean up if needed
 
             base.Cleanup();
-            _gpsWatcher.Stop();
+            App.LocationService.Stop();
         }
 
         #endregion

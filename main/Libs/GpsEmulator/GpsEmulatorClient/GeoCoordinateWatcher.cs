@@ -167,7 +167,7 @@ namespace GpsEmulatorClient
                     status = GeoPositionStatus.Initializing;
                     client = new GpsEmulatorServiceClient( 
                                     new BasicHttpBinding(BasicHttpSecurityMode.None), 
-                                    new EndpointAddress("http://localhost:8192/GpsEmulator")); // change end point to real IP when testing on a real device
+                                    new EndpointAddress("http://localhost:9192/GpsEmulator")); // change end point to real IP when testing on a real device
                     client.OpenCompleted += new EventHandler<System.ComponentModel.AsyncCompletedEventArgs>(client_OpenCompleted);
                     client.GetCurrentPositionCompleted +=new EventHandler<GetCurrentPositionCompletedEventArgs>(client_GetCurrentPositionCompleted);
                     ICommunicationObject commObject = client as ICommunicationObject;
