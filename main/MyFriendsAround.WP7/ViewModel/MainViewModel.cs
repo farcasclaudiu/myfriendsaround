@@ -22,6 +22,7 @@ using Hammock;
 using Hammock.Serialization;
 using Microsoft.Phone;
 using Microsoft.Phone.Controls;
+using Microsoft.Phone.Controls.Maps;
 using Microsoft.Silverlight.Testing;
 using MyFriendsAround.Common.Entities;
 using MyFriendsAround.WP7.Service;
@@ -47,6 +48,41 @@ namespace MyFriendsAround.WP7.ViewModel
     /// </summary>
     public class MainViewModel : ViewModelBase
     {
+
+        /// <summary>
+        /// Initializes a new instance of the MainViewModel class.
+        /// </summary>
+        public MainViewModel()
+        {
+            //
+            MainLoadCommand = new RelayCommand(() => MainLoad());
+            PublishLocationCommand = new RelayCommand(() => PublishLocationAction());
+            DisplayAboutCommand = new RelayCommand(() => DisplayAbout());
+            NavigateToSettingsCommand = new RelayCommand(() => NavigateToSettings());
+            RefreshFriendsCommand = new RelayCommand(() => RefreshFriends());
+            ShowAboutCommand = new RelayCommand(() => ShowAbout());
+            SaveMySettingsCommand = new RelayCommand(() => SaveMySettings());
+            CancelMySettingsCommand = new RelayCommand(() => CancelMySettings());
+            ChoosePhotoCommand = new RelayCommand(() => ChoosePhoto());
+            CropSaveCommand = new RelayCommand(() => CropSave());
+            CropCancelCommand = new RelayCommand(() => CropCancel());
+            MapViewChangedCommand = new RelayCommand<LocationRect>(boundRectangle => MapViewChanged(boundRectangle));
+            ShowMyLocationCommand = new RelayCommand(() => ShowMyLocation());
+
+            if (IsInDesignMode)
+            {
+                // Code runs in Blend --> create design time data.
+            }
+            else
+            {
+                // Code runs "for real"
+            }
+
+        }
+
+
+        #region Properties
+
         public string ApplicationTitle
         {
             get
@@ -54,6 +90,10 @@ namespace MyFriendsAround.WP7.ViewModel
                 return "MyFriendsAround";
             }
         }
+
+
+
+        #region PageTitles
 
         public string PageName
         {
@@ -79,33 +119,305 @@ namespace MyFriendsAround.WP7.ViewModel
             }
         }
 
+        #endregion
+        
+
+
         /// <summary>
-        /// Initializes a new instance of the MainViewModel class.
+        /// The <see cref="MyPicture" /> property's name.
         /// </summary>
-        public MainViewModel()
+        public const string MyPicturePropertyName = "MyPicture";
+        private ImageSource _myPicture = new BitmapImage(new Uri("/icons/anonymousIcon.png", UriKind.RelativeOrAbsolute));
+
+        /// <summary>
+        /// Gets the MyPicture property.
+        /// </summary>
+        public ImageSource MyPicture
+        {
+            get
+            {
+                return _myPicture;
+            }
+
+            set
+            {
+                if (_myPicture == value)
+                {
+                    return;
+                }
+
+                _myPicture = value;
+
+                // Update bindings, no broadcast
+                RaisePropertyChanged(MyPicturePropertyName);
+            }
+        }
+
+
+
+       
+
+
+
+        /// <summary>
+        /// The <see cref="MyName" /> property's name.
+        /// </summary>
+        public const string MyNamePropertyName = "MyName";
+        private string _myName = "Guest";
+
+        /// <summary>
+        /// Gets the MyName property.
+        /// </summary>
+        public string MyName
+        {
+            get { return _myName; }
+            set
+            {
+                if (_myName == value)
+                {
+                    return;
+                }
+                var oldValue = _myName;
+                _myName = value;
+                // Update bindings, no broadcast
+                RaisePropertyChanged(MyNamePropertyName);
+            }
+        }
+
+
+        public string AppBarTextAbout
+        {
+            get { return "About"; }
+        }
+
+        public string AppBarTextSettings
+        {
+            get { return "Settings"; }
+        }
+
+        public string AppBarTextPublish
+        {
+            get { return "Publish"; }
+        }
+
+        public string AppBarTextRefresh
+        {
+            get { return "Refresh"; }
+        }
+
+        public string AppBarTextMyLocation
+        {
+            get { return "My Location"; }
+        }
+
+        public string AppBarTextSaveSettings
+        {
+            get { return "Save"; }
+        }
+
+        public string AppBarTextCancelSettings
+        {
+            get { return "Cancel"; }
+        }
+
+        /// <summary>
+        /// The <see cref="PushPins" /> property's name.
+        /// </summary>
+        public const string PushPinsPropertyName = "PushPins";
+        private ObservableCollection<PushPinModel> _PushPins = new ObservableCollection<PushPinModel>();
+        /// <summary>
+        /// Gets the PushPins property.
+        /// </summary>
+        public ObservableCollection<PushPinModel> PushPins
+        {
+            get
+            {
+                return _PushPins;
+            }
+
+            set
+            {
+                if (_PushPins == value)
+                {
+                    return;
+                }
+
+                _PushPins = value;
+
+                // Update bindings, no broadcast
+                RaisePropertyChanged(PushPinsPropertyName);
+            }
+        }
+
+
+        /// <summary>
+        /// The <see cref="VisiblePushPins" /> property's name.
+        /// </summary>
+        public const string VisiblePushPinsPropertyName = "VisiblePushPins";
+        private ObservableCollection<PushPinModel> _VisiblePushPins = new ObservableCollection<PushPinModel>();
+        /// <summary>
+        /// Gets the PushPins property.
+        /// </summary>
+        public ObservableCollection<PushPinModel> VisiblePushPins
+        {
+            get
+            {
+                return _VisiblePushPins;
+            }
+
+            set
+            {
+                if (_VisiblePushPins == value)
+                {
+                    return;
+                }
+
+                _VisiblePushPins = value;
+
+                // Update bindings, no broadcast
+                RaisePropertyChanged(VisiblePushPinsPropertyName);
+            }
+        }
+
+
+        /// <summary>
+        /// The <see cref="MapZoom" /> property's name.
+        /// </summary>
+        public const string MapZoomPropertyName = "MapZoom";
+
+        private int _mapZoom = 1;
+
+        /// <summary>
+        /// Gets the MapZoom property.
+        /// </summary>
+        public int MapZoom
+        {
+            get
+            {
+                return _mapZoom;
+            }
+
+            set
+            {
+                if (_mapZoom == value)
+                {
+                    return;
+                }
+                _mapZoom = value;
+
+                // Update bindings, no broadcast
+                RaisePropertyChanged(MapZoomPropertyName);
+            }
+        }
+
+
+
+
+        /// <summary>
+        /// The <see cref="IsBusy" /> property's name.
+        /// </summary>
+        public const string IsBusyPropertyName = "IsBusy";
+
+        private bool _isBusy = false;
+
+        /// <summary>
+        /// Gets the IsBusy property.
+        /// </summary>
+        public bool IsBusy
+        {
+            get
+            {
+                return _isBusy;
+            }
+
+            set
+            {
+                if (_isBusy == value)
+                {
+                    return;
+                }
+
+                var oldValue = _isBusy;
+                _isBusy = value;
+
+                // Update bindings, no broadcast
+                RaisePropertyChanged(IsBusyPropertyName);
+            }
+        }
+
+
+
+        /// <summary>
+        /// The <see cref="MapCenter" /> property's name.
+        /// </summary>
+        public const string MapCenterPropertyName = "MapCenter";
+
+        private GeoCoordinate _mapCenter = null;
+
+        /// <summary>
+        /// Gets the MapCenter property.
+        /// </summary>
+        public GeoCoordinate MapCenter
+        {
+            get
+            {
+                return _mapCenter;
+            }
+
+            set
+            {
+                if (_mapCenter == value)
+                {
+                    return;
+                }
+
+                var oldValue = _mapCenter;
+                _mapCenter = value;
+
+                // Update bindings, no broadcast
+                RaisePropertyChanged(MapCenterPropertyName);
+            }
+        }
+
+        #endregion
+
+        #region Commands
+
+        public ICommand MainLoadCommand { get; set; }
+        public ICommand PublishLocationCommand { get; set; }
+        public ICommand DisplayAboutCommand { get; set; }
+        public ICommand NavigateToSettingsCommand { get; set; }
+        public ICommand ShowMyLocationCommand { get; set; }
+        public ICommand RefreshFriendsCommand { get; set; }
+        public ICommand ShowAboutCommand { get; set; }
+        public ICommand SaveMySettingsCommand { get; set; }
+        public ICommand CancelMySettingsCommand { get; set; }
+        public ICommand ChoosePhotoCommand { get; set; }
+        public ICommand CropSaveCommand { get; set; }
+        public ICommand CropCancelCommand { get; set; }
+        public ICommand MapViewChangedCommand { get; set; }
+
+        #endregion
+
+        #region Implemented Commands & Methods
+
+        private void ShowMyLocation()
         {
             //
-            MainLoadCommand = new RelayCommand(() => MainLoad());
-            PublishLocationCommand = new RelayCommand(() => PublishLocationAction());
-            DisplayAboutCommand = new RelayCommand(() => DisplayAbout());
-            NavigateToSettingsCommand = new RelayCommand(() => NavigateToSettings());
-            RefreshFriendsCommand = new RelayCommand(() => RefreshFriends());
-            ShowAboutCommand = new RelayCommand(() => ShowAbout());
-            SaveMySettingsCommand = new RelayCommand(() => SaveMySettings());
-            CancelMySettingsCommand = new RelayCommand(() => CancelMySettings());
-            ChoosePhotoCommand = new RelayCommand(() => ChoosePhoto());
-            CropSaveCommand = new RelayCommand(() => CropSave());
-            CropCancelCommand = new RelayCommand(() => CropCancel());
+        }
 
-            if (IsInDesignMode)
+        private void MapViewChanged(LocationRect boundRectangle)
+        {
+            ObservableCollection<PushPinModel> _newVisiblePushPins = new ObservableCollection<PushPinModel>();
+            //filter visible pushpins
+            foreach (PushPinModel pushPin in PushPins)
             {
-                // Code runs in Blend --> create design time data.
+                if (boundRectangle.Intersects(new LocationRect(pushPin.Location, .5, .5)))
+                {
+                    _newVisiblePushPins.Add(pushPin);
+                }
             }
-            else
-            {
-                // Code runs "for real"
-            }
-
+            VisiblePushPins = _newVisiblePushPins;
         }
 
         public void CropCancel()
@@ -118,7 +430,7 @@ namespace MyFriendsAround.WP7.ViewModel
         {
             //
         }
-        
+
 
         private void MainLoad()
         {
@@ -189,7 +501,7 @@ namespace MyFriendsAround.WP7.ViewModel
 
         private void cameraTask_Completed(object sender, PhotoResult e)
         {
-            if (e.ChosenPhoto!=null && e.ChosenPhoto.Length>0) // e.TaskResult == TaskResult.OK)
+            if (e.ChosenPhoto != null && e.ChosenPhoto.Length > 0) // e.TaskResult == TaskResult.OK)
             {
                 // Get the image temp file from e.OriginalFileName.
                 // Get the image temp stream from e.ChosenPhoto.
@@ -210,39 +522,6 @@ namespace MyFriendsAround.WP7.ViewModel
             }
         }
 
-        /// <summary>
-        /// The <see cref="MyPicture" /> property's name.
-        /// </summary>
-        public const string MyPicturePropertyName = "MyPicture";
-        private ImageSource _myPicture = new BitmapImage(new Uri("/icons/anonymousIcon.png", UriKind.RelativeOrAbsolute));
-
-        /// <summary>
-        /// Gets the MyPicture property.
-        /// </summary>
-        public ImageSource MyPicture
-        {
-            get
-            {
-                return _myPicture;
-            }
-
-            set
-            {
-                if (_myPicture == value)
-                {
-                    return;
-                }
-
-                var oldValue = _myPicture;
-                _myPicture = value;
-
-                // Update bindings, no broadcast
-                RaisePropertyChanged(MyPicturePropertyName);
-
-                // Update bindings and broadcast change using GalaSoft.MvvmLight.Messenging
-                RaisePropertyChanged(MyPicturePropertyName, oldValue, value, true);
-            }
-        }
 
 
         private void CancelMySettings()
@@ -289,16 +568,16 @@ namespace MyFriendsAround.WP7.ViewModel
         {
             ObservableCollection<PushPinModel> result = new ObservableCollection<PushPinModel>();
             list.ForEach((f) =>
-                             {
-                                 //f.LocationStr
-                                 result.Add(new PushPinModel()
-                                                  {
-                                                      PinSource = "/ApplicationIcon.png",
-                                                      Location = new GeoCoordinate(f.Latitude, f.Longitude),
-                                                      PinUserName = f.FriendName,
-                                                      PinImageUrl = string.Format("https://myfriendsaround.blob.core.windows.net/profiles/profile_{0}.jpg", f.Id) 
-                                                  });
-                             });
+            {
+                //f.LocationStr
+                result.Add(new PushPinModel()
+                {
+                    PinSource = "/ApplicationIcon.png",
+                    Location = new GeoCoordinate(f.Latitude, f.Longitude),
+                    PinUserName = f.FriendName,
+                    PinImageUrl = string.Format("https://myfriendsaround.blob.core.windows.net/profiles/profile_{0}.jpg", f.Id)
+                });
+            });
             PushPins = result;
         }
 
@@ -320,20 +599,20 @@ namespace MyFriendsAround.WP7.ViewModel
             {
                 List<Friend> list = args.Friends;
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                                                          {
-                                                              PopulatePushPins(list);
-                                                              IsBusy = false;
-                                                          }
+                {
+                    PopulatePushPins(list);
+                    IsBusy = false;
+                }
                     );
             }
             else
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                                                          {
-                                                              IsBusy = false;
-                                                              var exception = new ExceptionPrompt();
-                                                              exception.Show(args.Error);
-                                                          }
+                {
+                    IsBusy = false;
+                    var exception = new ExceptionPrompt();
+                    exception.Show(args.Error);
+                }
                     );
             }
         }
@@ -343,27 +622,27 @@ namespace MyFriendsAround.WP7.ViewModel
             if (args.Error != null)
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                                                          {
-                                                              IsBusy = false;
-                                                              var exception = new ExceptionPrompt();
-                                                              exception.Show(args.Error);
-                                                          });
+                {
+                    IsBusy = false;
+                    var exception = new ExceptionPrompt();
+                    exception.Show(args.Error);
+                });
             }
             else
             {
                 if (!args.IsSuccess)
                 {
                     DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                                                              {
-                                                                  var message = new DialogMessage(
-                                                                      "Communication error!", DialogMessageCallback)
-                                                                                    {
-                                                                                        Button = MessageBoxButton.OK,
-                                                                                        Caption = "Error!"
-                                                                                    };
+                    {
+                        var message = new DialogMessage(
+                            "Communication error!", DialogMessageCallback)
+                        {
+                            Button = MessageBoxButton.OK,
+                            Caption = "Error!"
+                        };
 
-                                                                  Messenger.Default.Send(message);
-                                                              });
+                        Messenger.Default.Send(message);
+                    });
                 }
                 else
                 {
@@ -431,79 +710,6 @@ namespace MyFriendsAround.WP7.ViewModel
             }
         }
 
-        public ICommand MainLoadCommand { get; set; }
-        public ICommand PublishLocationCommand { get; set; }
-        public ICommand DisplayAboutCommand { get; set; }
-        public ICommand NavigateToSettingsCommand { get; set; }
-        public ICommand RefreshFriendsCommand { get; set; }
-        public ICommand ShowAboutCommand { get; set; }
-        public ICommand SaveMySettingsCommand { get; set; }
-        public ICommand CancelMySettingsCommand { get; set; }
-        public ICommand ChoosePhotoCommand { get; set; }
-        public ICommand CropSaveCommand { get; set; }
-        public ICommand CropCancelCommand { get; set; }
-        
-        
-
-
-        /// <summary>
-        /// The <see cref="MyName" /> property's name.
-        /// </summary>
-        public const string MyNamePropertyName = "MyName";
-        private string _myName = "Guest";
-
-        /// <summary>
-        /// Gets the MyName property.
-        /// </summary>
-        public string MyName
-        {
-            get { return _myName; }
-            set
-            {
-                if (_myName == value)
-                {
-                    return;
-                }
-                var oldValue = _myName;
-                _myName = value;
-                // Update bindings, no broadcast
-                RaisePropertyChanged(MyNamePropertyName);
-            }
-        }
-
-
-        public string AppBarTextAbout
-        {
-            get { return "About"; }
-        }
-
-        public string AppBarTextSettings
-        {
-            get { return "Settings"; }
-        }
-
-        public string AppBarTextPublish
-        {
-            get { return "Publish"; }
-        }
-
-        public string AppBarTextRefresh
-        {
-            get { return "Refresh"; }
-        }
-
-        public string AppBarTextSaveSettings
-        {
-            get { return "Save"; }
-        }
-
-        public string AppBarTextCancelSettings
-        {
-            get { return "Cancel"; }
-        }
-
-        
-
         ////public override void Cleanup()
         ////{
         ////    // Clean up if needed
@@ -511,136 +717,8 @@ namespace MyFriendsAround.WP7.ViewModel
         ////    base.Cleanup();
         ////}
 
-
-        /// <summary>
-        /// The <see cref="PushPins" /> property's name.
-        /// </summary>
-        public const string PushPinsPropertyName = "PushPins";
-        private ObservableCollection<PushPinModel> _PushPins = new ObservableCollection<PushPinModel>();
-        /// <summary>
-        /// Gets the PushPins property.
-        /// </summary>
-        public ObservableCollection<PushPinModel> PushPins
-        {
-            get
-            {
-                return _PushPins;
-            }
-
-            set
-            {
-                if (_PushPins == value)
-                {
-                    return;
-                }
-
-                _PushPins = value;
-
-                // Update bindings, no broadcast
-                RaisePropertyChanged(PushPinsPropertyName);
-
-                //// Update bindings and broadcast change using GalaSoft.MvvmLight.Messenging
-                //RaisePropertyChanged(PushPinsPropertyName, oldValue, value, true);
-            }
-        }
-
-
-        /// <summary>
-        /// The <see cref="MapZoom" /> property's name.
-        /// </summary>
-        public const string MapZoomPropertyName = "MapZoom";
-
-        private int _mapZoom = 1;
-
-        /// <summary>
-        /// Gets the MapZoom property.
-        /// </summary>
-        public int MapZoom
-        {
-            get
-            {
-                return _mapZoom;
-            }
-
-            set
-            {
-                if (_mapZoom == value)
-                {
-                    return;
-                }
-                _mapZoom = value;
-
-                // Update bindings, no broadcast
-                RaisePropertyChanged(MapZoomPropertyName);
-            }
-        }
-
-
-        /// <summary>
-        /// The <see cref="MapCenter" /> property's name.
-        /// </summary>
-        public const string MapCenterPropertyName = "MapCenter";
-        private GeoCoordinate _mapCenter = new GeoCoordinate(0, 0);
-
-        /// <summary>
-        /// Gets the MapCenter property.
-        /// </summary>
-        public GeoCoordinate MapCenter
-        {
-            get
-            {
-                return _mapCenter;
-            }
-
-            set
-            {
-                if (_mapCenter == value)
-                {
-                    return;
-                }
-
-                var oldValue = _mapCenter;
-                _mapCenter = value;
-
-                // Update bindings, no broadcast
-                RaisePropertyChanged(MapCenterPropertyName);
-                //// Update bindings and broadcast change using GalaSoft.MvvmLight.Messenging
-                //RaisePropertyChanged(MapCenterPropertyName, oldValue, value, true);
-            }
-        }
-
-
-        /// <summary>
-        /// The <see cref="IsBusy" /> property's name.
-        /// </summary>
-        public const string IsBusyPropertyName = "IsBusy";
-
-        private bool _isBusy = false;
-
-        /// <summary>
-        /// Gets the IsBusy property.
-        /// </summary>
-        public bool IsBusy
-        {
-            get
-            {
-                return _isBusy;
-            }
-
-            set
-            {
-                if (_isBusy == value)
-                {
-                    return;
-                }
-
-                var oldValue = _isBusy;
-                _isBusy = value;
-
-                // Update bindings, no broadcast
-                RaisePropertyChanged(IsBusyPropertyName);
-            }
-        }
+        #endregion
 
     }
+
 }
