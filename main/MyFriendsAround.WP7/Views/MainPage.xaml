@@ -20,7 +20,8 @@
                             DataContext="{Binding Main, Source={StaticResource Locator}}"
                             xmlns:my="clr-namespace:Microsoft.Phone.Controls.Maps;assembly=Microsoft.Phone.Controls.Maps"
                             xmlns:Preview="clr-namespace:Phone7.Fx.Preview;assembly=Phone7.Fx.Preview"
-                            xmlns:binding="clr-namespace:Coding4Fun.Phone.Controls.Binding;assembly=Coding4Fun.Phone.Controls" xmlns:Core="clr-namespace:Microsoft.Phone.Controls.Maps.Core;assembly=Microsoft.Phone.Controls.Maps">
+                            xmlns:binding="clr-namespace:Coding4Fun.Phone.Controls.Binding;assembly=Coding4Fun.Phone.Controls"
+                            xmlns:Core="clr-namespace:Microsoft.Phone.Controls.Maps.Core;assembly=Microsoft.Phone.Controls.Maps">
 
     <!--LayoutRoot contains the root grid where all other page content is placed-->
 
@@ -44,13 +45,17 @@
                           HorizontalAlignment="Left">
                         <Image x:Name="imgFriend"
                                Source="{Binding PinImageUrl, Mode=OneWay}"
-                               Margin="2, 2, 2, 24" Width="48" Height="48"
+                               Margin="2, 2, 2, 24"
+                               Width="48"
+                               Height="48"
                                Stretch="Fill">
                         </Image>
                         <TextBlock HorizontalAlignment="Left"
-                                   Text="{Binding PinUserName, Mode=OneWay}" 
+                                   Text="{Binding PinUserName, Mode=OneWay}"
                                    VerticalAlignment="Bottom"
-                                   Margin="1" Width="48" Height="24" />
+                                   Margin="1"
+                                   Width="48"
+                                   Height="24" />
                     </Grid>
                     <Polygon Fill="{TemplateBinding Background}"
                              Points="0,0 29,0 0,29"
@@ -67,7 +72,7 @@
             <cmd:EventToCommand Command="{Binding MainLoadCommand}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
-    
+
     <Grid x:Name="LayoutRoot"
           Background="Transparent">
         <Grid.RowDefinitions>
@@ -85,15 +90,15 @@
             </DataTemplate>
             <my:MapItemsControl x:Name="GroupAPins"
                                 ItemTemplate="{StaticResource LogoTemplate}"
-                                ItemsSource="{Binding PushPins}"
-                                >
+                                ItemsSource="{Binding PushPins}">
             </my:MapItemsControl>
         </Grid.Resources>
 
 
-                <!--ContentPanel - place additional content here-->
+        <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentGrid"
-              Grid.Row="0" VerticalAlignment="Stretch" 
+              Grid.Row="0"
+              VerticalAlignment="Stretch"
               Grid.RowSpan="2"
               Margin="0">
 
@@ -111,72 +116,100 @@
 
             <my:Map x:Name="map"
                     CredentialsProvider="AkCiPfQt9YM0cCkZlltdR3mnFQRkV41l4f-eXFmf3qcBBhBC-EkvD8MuazOkMnE_"
-                    HorizontalAlignment="Stretch" ZoomBarVisibility="Visible"
+                    HorizontalAlignment="Stretch"
+                    ZoomBarVisibility="Visible"
                     Margin="6,0,6,0"
                     VerticalAlignment="Stretch"
                     Center="{Binding Path=MapCenter, Mode=TwoWay}"
-                    ZoomLevel="{Binding Path=MapZoom, Mode=TwoWay}" 
-                    AnimationLevel="Full" 
-                    ViewChangeEnd="map_ViewChangeEnd"
-                    >
+                    ZoomLevel="{Binding Path=MapZoom, Mode=TwoWay}"
+                    AnimationLevel="Full"
+                    ViewChangeEnd="map_ViewChangeEnd">
                 <my:MapLayer x:Name="layerFriends">
                     <my:MapItemsControl ItemsSource="{Binding VisiblePushPins}"
                                         ItemTemplate="{StaticResource LogoTemplate}">
                     </my:MapItemsControl>
                 </my:MapLayer>
                 <my:MapLayer x:Name="layerMyLocation">
-                    <my:MapItemsControl>
+                    <my:MapItemsControl ItemsSource="{Binding MyLocationPushPins}">
+                        <my:MapItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <my:Pushpin Location="{Binding Location}"
+                                            Background="{StaticResource PhoneAccentBrush}"
+                                            Template="{StaticResource PushpinControlTemplate1}" />
+                            </DataTemplate>
+                        </my:MapItemsControl.ItemTemplate>
                     </my:MapItemsControl>
                 </my:MapLayer>
             </my:Map>
-            <StackPanel HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Background="Black"
-                        Opacity="0.5"
-                        >
-                <Image Source="/icons/appbar.location.png" 
-                       Margin="10" 
-                       Width="64" 
-                       Height="64" />
-                <Image Source="/icons/appbar.location.png"
-                       Margin="10"
-                       Width="64"
-                       Height="64" />
-            </StackPanel>
-            
+
+            <Grid  HorizontalAlignment="Right"
+                   VerticalAlignment="Center"
+                   Width="64"
+                   >
+                <Rectangle RadiusX="10"
+                           RadiusY="10"
+                           Fill="Black"
+                           Opacity="0.3"
+                           Margin="0,0,-20,0"
+                           >
+                </Rectangle>
+
+
+                <StackPanel HorizontalAlignment="Left" VerticalAlignment="Stretch">
+                    <Image Source="/icons/appbar.location.png"
+                           Margin="0"
+                           Width="64"
+                           Height="64"
+                           VerticalAlignment="Top"
+                           HorizontalAlignment="Left"
+                           />
+                    <Image Source="/icons/appbar.location.png"
+                           Margin="0"
+                           Width="64"
+                           Height="64"
+                           VerticalAlignment="Bottom"
+                           HorizontalAlignment="Left" />
+
+                </StackPanel>
+            </Grid>
+
         </Grid>
 
 
         <!--TitlePanel contains the name of the application and page title-->
         <Grid x:Name="TitlePanel"
-                    Grid.Row="0"
-                    Margin="0"
-                    Background="Black" 
-                    VerticalAlignment="Top"
-                    HorizontalAlignment="Stretch"
-                    Opacity="0.8">
+              Grid.Row="0"
+              Margin="0"
+              Background="Black"
+              VerticalAlignment="Top"
+              HorizontalAlignment="Stretch"
+              Opacity="0.8">
             <TextBlock x:Name="ApplicationTitle"
                        Margin="12, 12, 0, 0"
                        Text="{Binding ApplicationTitle}"
                        Foreground="{StaticResource PhoneAccentBrush}"
                        Style="{StaticResource PhoneTextNormalStyle}" />
             <Grid Margin="0,6,6,6"
-                  Height="80" >
+                  Height="80">
                 <Grid Width="80"
                       Height="80"
                       HorizontalAlignment="Right"
                       Background="Transparent"
-                      Opacity="1"
-                      >
-                    <Image x:Name="imgMine" Opacity="1"
-                           Source="{Binding MyPicture, Mode=OneWay}" Margin="0" Stretch="Fill" >
+                      Opacity="1">
+                    <Image x:Name="imgMine"
+                           Opacity="1"
+                           Source="{Binding MyPicture, Mode=OneWay}"
+                           Margin="0"
+                           Stretch="Fill"
+                           >
                     </Image>
                     <Border Background="{StaticResource PhoneAccentBrush}"
                             Width="80"
                             Height="25"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Bottom"
-                            BorderThickness="0" Opacity="1">
+                            BorderThickness="0"
+                            Opacity="1">
                         <TextBlock x:Name="txtMyName"
                                    Style="{StaticResource PhoneTextNormalStyle}"
                                    FontSize="16"
@@ -184,7 +217,8 @@
                                    HorizontalAlignment="Left"
                                    VerticalAlignment="Center"
                                    Margin="2"
-                                   Text="{Binding MyName, Mode=OneWay}" Opacity="1" />
+                                   Text="{Binding MyName, Mode=OneWay}"
+                                   Opacity="1" />
                     </Border>
                 </Grid>
 
@@ -208,7 +242,8 @@
                                                       IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertValueConverter1}}" />
             <Preview:BindableApplicationBarIconButton Command="{Binding RefreshFriendsCommand}"
                                                       IconUri="/icons/appbar.sync.rest.png"
-                                                      Text="{Binding AppBarTextRefresh}" IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertValueConverter1}}" />
+                                                      Text="{Binding AppBarTextRefresh}"
+                                                      IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertValueConverter1}}" />
             <Preview:BindableApplicationBarIconButton Command="{Binding PublishLocationCommand}"
                                                       IconUri="/icons/appbar.publish.png"
                                                       Text="{Binding AppBarTextPublish}" />

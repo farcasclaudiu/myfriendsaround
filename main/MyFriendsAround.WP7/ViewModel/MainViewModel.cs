@@ -27,6 +27,7 @@ using Microsoft.Silverlight.Testing;
 using MyFriendsAround.Common.Entities;
 using MyFriendsAround.WP7.Service;
 using MyFriendsAround.WP7.Utils;
+using MyFriendsAround.WP7.ViewModel;
 using MyFriendsAround.WP7.Views;
 using NetworkDetection;
 using Newtonsoft.Json;
@@ -78,10 +79,75 @@ namespace MyFriendsAround.WP7.ViewModel
                 // Code runs "for real"
             }
 
+            photoChooserTask = new PhotoChooserTask();
+            photoChooserTask.Completed += cameraTask_Completed;
+            //photoChooserTask.PixelHeight = 100;
+            //photoChooserTask.PixelWidth = 100;
+            photoChooserTask.ShowCamera = true;
+
+            //init GPS
+            InitGps();
         }
 
 
-        #region Properties
+        private void InitGps()
+        {
+#if GPS_EMULATOR
+            _gpsWatcher = new GpsEmulatorClient.GeoCoordinateWatcher();
+#else
+            _gpsWatcher = new GeoCoordinateWatcher(GeoPositionAccuracy.High)
+                              {
+                                  MovementThreshold = 10
+                              };
+#endif
+            _gpsWatcher.PositionChanged += new EventHandler<GeoPositionChangedEventArgs<GeoCoordinate>>(watcher_PositionChanged);
+            _gpsWatcher.StatusChanged += new EventHandler<GeoPositionStatusChangedEventArgs>(watcher_StatusChanged);
+
+            //
+            _gpsWatcher.Start();
+        }
+
+        void watcher_StatusChanged(object sender, GeoPositionStatusChangedEventArgs e)
+        {
+            GpsStatus = e.Status;
+        }
+
+        void watcher_PositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
+        {
+            if (e.Position.Location != GeoCoordinate.Unknown)
+            {
+                GpsTimestamp = e.Position.Timestamp;
+                GpsLocation = e.Position.Location;
+
+                if (LastBoundRect.Intersects(new LocationRect(GpsLocation, .5, .5)))
+                {
+                    ObservableCollection<PushPinModel> _mynewlocation = new ObservableCollection<PushPinModel>();
+                    _mynewlocation.Add(new PushPinModel()
+                                           {
+                                               Location = GpsLocation,
+                                               PinUserName = "Me"
+                                           });
+                    MyLocationPushPins = _mynewlocation;
+                }
+                else
+                {
+                    MyLocationPushPins = new ObservableCollection<PushPinModel>();
+                }
+            }
+
+            System.Diagnostics.Debug.WriteLine("watcher_PositionChanged + " + DateTime.Now.Second);
+        }
+
+
+
+
+
+
+        #region Properties & Fields
+
+        private PhotoChooserTask photoChooserTask;
+        private IGeoPositionWatcher<GeoCoordinate> _gpsWatcher;
+
 
         public string ApplicationTitle
         {
@@ -90,7 +156,6 @@ namespace MyFriendsAround.WP7.ViewModel
                 return "MyFriendsAround";
             }
         }
-
 
 
         #region PageTitles
@@ -120,19 +185,113 @@ namespace MyFriendsAround.WP7.ViewModel
         }
 
         #endregion
-        
 
+
+
+        /// <summary>
+        /// The <see cref="GpsLocation" /> property's name.
+        /// </summary>
+        public const string GpsLocationPropertyName = "GpsLocation";
+
+        private GeoCoordinate _gpsLocation = GeoCoordinate.Unknown;
+
+        /// <summary>
+        /// Gets the GpsLocation property.
+        /// </summary>
+        public GeoCoordinate GpsLocation
+        {
+            get
+            {
+                return _gpsLocation;
+            }
+
+            set
+            {
+                if (_gpsLocation == value)
+                {
+                    return;
+                }
+
+                _gpsLocation = value;
+
+                // Update bindings, no broadcast
+                RaisePropertyChanged(GpsLocationPropertyName);
+            }
+        }
+
+
+        /// <summary>
+        /// The <see cref="GpsTimestamp" /> property's name.
+        /// </summary>
+        public const string GpsTimestampPropertyName = "GpsTimestamp";
+
+        private DateTimeOffset _gpsTimestamp = DateTimeOffset.MinValue;
+
+        /// <summary>
+        /// Gets the GpsTimestamp property.
+        /// </summary>
+        public DateTimeOffset GpsTimestamp
+        {
+            get
+            {
+                return _gpsTimestamp;
+            }
+
+            set
+            {
+                if (_gpsTimestamp == value)
+                {
+                    return;
+                }
+
+                _gpsTimestamp = value;
+
+                // Update bindings, no broadcast
+                RaisePropertyChanged(GpsTimestampPropertyName);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="GpsStatus" /> property's name.
+        /// </summary>
+        public const string GpsStatusPropertyName = "GpsStatus";
+
+        private GeoPositionStatus _gpsStatus = GeoPositionStatus.Disabled;
+
+        /// <summary>
+        /// Gets the GpsStatus property.
+        /// </summary>
+        public GeoPositionStatus GpsStatus
+        {
+            get
+            {
+                return _gpsStatus;
+            }
+
+            set
+            {
+                if (_gpsStatus == value)
+                {
+                    return;
+                }
+
+                _gpsStatus = value;
+
+                // Update bindings, no broadcast
+                RaisePropertyChanged(GpsStatusPropertyName);
+            }
+        }
 
         /// <summary>
         /// The <see cref="MyPicture" /> property's name.
         /// </summary>
         public const string MyPicturePropertyName = "MyPicture";
-        private ImageSource _myPicture = new BitmapImage(new Uri("/icons/anonymousIcon.png", UriKind.RelativeOrAbsolute));
+        private BitmapSource _myPicture = new BitmapImage(new Uri("/icons/anonymousIcon.png", UriKind.RelativeOrAbsolute));
 
         /// <summary>
         /// Gets the MyPicture property.
         /// </summary>
-        public ImageSource MyPicture
+        public BitmapSource MyPicture
         {
             get
             {
@@ -256,7 +415,7 @@ namespace MyFriendsAround.WP7.ViewModel
         public const string VisiblePushPinsPropertyName = "VisiblePushPins";
         private ObservableCollection<PushPinModel> _VisiblePushPins = new ObservableCollection<PushPinModel>();
         /// <summary>
-        /// Gets the PushPins property.
+        /// Gets the VisiblePushPins property.
         /// </summary>
         public ObservableCollection<PushPinModel> VisiblePushPins
         {
@@ -278,6 +437,37 @@ namespace MyFriendsAround.WP7.ViewModel
                 RaisePropertyChanged(VisiblePushPinsPropertyName);
             }
         }
+
+
+        /// <summary>
+        /// The <see cref="MyLocationPushPins" /> property's name.
+        /// </summary>
+        public const string MyLocationPushPinsPropertyName = "MyLocationPushPins";
+        private ObservableCollection<PushPinModel> _MyLocationPushPins = new ObservableCollection<PushPinModel>();
+        /// <summary>
+        /// Gets the MyLocationPushPins property.
+        /// </summary>
+        public ObservableCollection<PushPinModel> MyLocationPushPins
+        {
+            get
+            {
+                return _MyLocationPushPins;
+            }
+
+            set
+            {
+                if (_MyLocationPushPins == value)
+                {
+                    return;
+                }
+
+                _MyLocationPushPins = value;
+
+                // Update bindings, no broadcast
+                RaisePropertyChanged(MyLocationPushPinsPropertyName);
+            }
+        }
+
 
 
         /// <summary>
@@ -404,20 +594,34 @@ namespace MyFriendsAround.WP7.ViewModel
         private void ShowMyLocation()
         {
             //
+            if (GpsLocation != GeoCoordinate.Unknown &&
+                GpsStatus == GeoPositionStatus.Ready
+                )
+            {
+                MapCenter = GpsLocation;
+            }
         }
 
+        private LocationRect LastBoundRect = null;
         private void MapViewChanged(LocationRect boundRectangle)
         {
+            LastBoundRect = boundRectangle;
+            //
             ObservableCollection<PushPinModel> _newVisiblePushPins = new ObservableCollection<PushPinModel>();
             //filter visible pushpins
             foreach (PushPinModel pushPin in PushPins)
             {
-                if (boundRectangle.Intersects(new LocationRect(pushPin.Location, .5, .5)))
+                if (LastBoundRect.Intersects(new LocationRect(pushPin.Location, .5, .5)))
                 {
                     _newVisiblePushPins.Add(pushPin);
                 }
             }
             VisiblePushPins = _newVisiblePushPins;
+            //
+            if (!LastBoundRect.Intersects(new LocationRect(GpsLocation, .5, .5)))
+            {
+                MyLocationPushPins = new ObservableCollection<PushPinModel>();
+            }
         }
 
         public void CropCancel()
@@ -453,7 +657,9 @@ namespace MyFriendsAround.WP7.ViewModel
                 {
                     using (MemoryStream ms = new MemoryStream(img))
                     {
-                        Container.Instance.Resolve<MainViewModel>("MainViewModel").MyPicture = PictureDecoder.DecodeJpeg(ms);
+                        BitmapImage bi = new BitmapImage();
+                        bi.SetSource(ms);
+                        Container.Instance.Resolve<MainViewModel>("MainViewModel").MyPicture = bi;// PictureDecoder.DecodeJpeg(ms);
                     }
                 });
             }
@@ -482,13 +688,8 @@ namespace MyFriendsAround.WP7.ViewModel
             }
         }
 
-        PhotoChooserTask photoChooserTask = new PhotoChooserTask();
         private void ShowPhotoChooserTask()
         {
-            photoChooserTask.Completed += cameraTask_Completed;
-            //photoChooserTask.PixelHeight = 100;
-            //photoChooserTask.PixelWidth = 100;
-            photoChooserTask.ShowCamera = true;
             photoChooserTask.Show();
         }
 
@@ -517,8 +718,10 @@ namespace MyFriendsAround.WP7.ViewModel
                 // Seek back so we can create an image.
                 e.ChosenPhoto.Seek(0, SeekOrigin.Begin);
                 // Create an image from the stream.
-                var imageSource = PictureDecoder.DecodeJpeg(e.ChosenPhoto);
-                MyPicture = imageSource;
+                //var imageSource = PictureDecoder.DecodeJpeg(e.ChosenPhoto);
+                BitmapImage bi = new BitmapImage();
+                bi.SetSource(e.ChosenPhoto);
+                MyPicture = bi;// imageSource;
             }
         }
 
@@ -584,13 +787,20 @@ namespace MyFriendsAround.WP7.ViewModel
 
         private void PublishLocationAction()
         {
-            Friend myInfo = new Friend();
-            myInfo.Id = Identification.GetDeviceId();
-            myInfo.FriendName = MyName;
-            myInfo.LastUpdated = DateTime.UtcNow;
-            myInfo.LocationStr = string.Format("POINT({0} {1})", MapCenter.Latitude, MapCenter.Longitude);
-            IsBusy = true;
-            ServiceAgent.PublishLocation(myInfo, new EventHandler<PublishLocationEventArgs>(PublishLocationResult));
+            if (GpsLocation != GeoCoordinate.Unknown)
+            {
+                Friend myInfo = new Friend();
+                myInfo.Id = Identification.GetDeviceId();
+                myInfo.FriendName = MyName;
+                myInfo.LastUpdated = DateTime.UtcNow;
+                myInfo.LocationStr = string.Format("POINT({0} {1})", GpsLocation.Latitude, GpsLocation.Longitude);
+                IsBusy = true;
+                ServiceAgent.PublishLocation(myInfo, new EventHandler<PublishLocationEventArgs>(PublishLocationResult));
+            }
+            else
+            {
+                MessageBox.Show("GPS position not aquired yet!");
+            }
         }
 
         public void GetFriendsResult(object sender, FriendsListEventArgs args)
@@ -710,12 +920,13 @@ namespace MyFriendsAround.WP7.ViewModel
             }
         }
 
-        ////public override void Cleanup()
-        ////{
-        ////    // Clean up if needed
+        public override void Cleanup()
+        {
+            // Clean up if needed
 
-        ////    base.Cleanup();
-        ////}
+            base.Cleanup();
+            _gpsWatcher.Stop();
+        }
 
         #endregion
 

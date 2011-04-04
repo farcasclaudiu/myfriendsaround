@@ -160,6 +160,9 @@ namespace MyFriendsAround.WP7.Views
                 //save
                 IsolatedStorageHelper.SaveToLocalStorage("myphoto.jpg", "profiles", _imageBytes);
                 //
+                //BitmapImage bi = new BitmapImage();
+                //stream.Seek(0, SeekOrigin.Begin);
+                //bi.SetSource(stream);
                 Container.Instance.Resolve<MainViewModel>("MainViewModel").MyPicture = wbm;
             }
         }
