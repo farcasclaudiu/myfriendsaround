@@ -211,11 +211,6 @@
                            Source="{Binding SelectedFriend, Path=SelectedFriend.PinImageUrl, Converter={StaticResource imageCacheConverter}}"
                            Margin="1"
                            Stretch="Fill">
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="MouseLeftButtonDown">
-                                <cmd:EventToCommand Command="{Binding ShowSelectFriendCommand}" />
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
                     </Image>
                     <Border Background="{StaticResource PhoneAccentBrush}"
                             Width="80"
@@ -234,6 +229,15 @@
                                    Text="{Binding SelectedFriend, Path=SelectedFriend.PinUserName}"
                                    Opacity="1" />
                     </Border>
+                    <Rectangle Fill="Transparent"
+                               HorizontalAlignment="Stretch"
+                               VerticalAlignment="Stretch">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                <cmd:EventToCommand Command="{Binding ShowSelectFriendCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </Rectangle>
                 </Grid>
 
                 <toolkit:PerformanceProgressBar HorizontalAlignment="Left"

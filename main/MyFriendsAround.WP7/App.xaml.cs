@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Device.Location;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -16,6 +17,7 @@ using System.Windows.Shapes;
 using Microsoft.Phone;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
+using MyFriendsAround.WP7.Model;
 using MyFriendsAround.WP7.ViewModel;
 using MyFriendsAround.WP7.Utils;
 using GalaSoft.MvvmLight.Threading;
@@ -102,6 +104,8 @@ namespace MyFriendsAround.WP7
             if (mainModel != null)
             {
                 mainModel.IsBusy = false;
+                mainModel.GpsLocation = Location.Unknown;
+                mainModel.GpsStatus = GeoPositionStatus.NoData;
                 Container.Instance.RegisterInstance<MainViewModel>(mainModel, Constants.VM_MAIN);
             }
             else
