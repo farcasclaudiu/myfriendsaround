@@ -8,14 +8,23 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using System.Runtime.Serialization;
 
 namespace WPImageCaching
 {
     //Beinhaltet die Informationen eines Bildes
-    internal class ImageCacheItem
+    [DataContract]
+    public class ImageCacheItem
     {
+        public ImageCacheItem()
+        {
+        }
+
+        [DataMember]
         public string LocalFilename { get; set; }
+        [DataMember]
         public string ImageID { get; set; }
+        [DataMember]
         public DateTime Expiration { get; set; }
     }
 }

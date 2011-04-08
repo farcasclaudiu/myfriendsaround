@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Device.Location;
 using System.IO;
 using System.Net;
@@ -57,8 +58,18 @@ namespace MyFriendsAround.WP7.ViewModel
         public MainViewModel()
         {
             GpsLocation = Location.Unknown;
+            _SelectedFriend = null;
+
             //
             MainLoadCommand = new RelayCommand(() => MainLoad());
+            BackKeyPressCommand = new RelayCommand<CancelEventArgs>((args) =>
+                                                                        {
+                                                                            if (IsSelectFriend)
+                                                                            {
+                                                                                IsSelectFriend = !IsSelectFriend;
+                                                                                args.Cancel = true;
+                                                                            }
+                                                                        });
             PublishLocationCommand = new RelayCommand(() => PublishLocationAction());
             NavigateToSettingsCommand = new RelayCommand(() => NavigateToSettings());
             RefreshFriendsCommand = new RelayCommand(() => RefreshFriends());
@@ -194,12 +205,8 @@ namespace MyFriendsAround.WP7.ViewModel
         /// </summary>
         public const string SelectedFriendPropertyName = "SelectedFriend";
 
-        private PushPinModel _SelectedFriend = new PushPinModel()
-                                                   {
-                                                       Location = GeoCoordinate.Unknown,
-                                                       PinUserName = "Guest",
-                                                       PinImageUrl = string.Empty
-                                                   };
+        private PushPinModel _SelectedFriend;
+
 
         /// <summary>
         /// Gets the SelectedFriend property.
@@ -562,12 +569,6 @@ namespace MyFriendsAround.WP7.ViewModel
 
             set
             {
-                if (_isBusy == value)
-                {
-                    return;
-                }
-
-                var oldValue = _isBusy;
                 _isBusy = value;
 
                 // Update bindings, no broadcast
@@ -616,6 +617,7 @@ namespace MyFriendsAround.WP7.ViewModel
         #region Commands
 
         public ICommand MainLoadCommand { get; set; }
+        public ICommand BackKeyPressCommand { get; set; }
         public ICommand PublishLocationCommand { get; set; }
         public ICommand NavigateToSettingsCommand { get; set; }
         public ICommand ShowMyLocationCommand { get; set; }
@@ -876,7 +878,7 @@ namespace MyFriendsAround.WP7.ViewModel
                 result.Add(new PushPinModel()
                                {
                                    PinSource = "/ApplicationIcon.png",
-                                   Location = new GeoCoordinate(f.Latitude, f.Longitude),
+                                   Location = new GeoCoordinate(f.Latitude, f.Longitude, 0),
                                    PinUserName = f.FriendName,
                                    PinImageUrl =
                                        string.Format(
@@ -923,21 +925,21 @@ namespace MyFriendsAround.WP7.ViewModel
             {
                 List<Friend> list = args.Friends;
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                {
-                    PopulatePushPins(list);
-                    IsBusy = false;
-                }
-                    );
+                    {
+                        IsBusy = false;
+                        PopulatePushPins(list);
+                    }
+                );
             }
             else
             {
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                {
-                    IsBusy = false;
-                    var exception = new ExceptionPrompt();
-                    exception.Show(args.Error);
-                }
-                    );
+                    {
+                        IsBusy = false;
+                        var exception = new ExceptionPrompt();
+                        exception.Show(args.Error);
+                    }
+                );
             }
         }
 
@@ -958,6 +960,7 @@ namespace MyFriendsAround.WP7.ViewModel
                 {
                     DispatcherHelper.CheckBeginInvokeOnUI(() =>
                     {
+                        IsBusy = false;
                         var message = new DialogMessage(
                             "Communication error!", DialogMessageCallback)
                         {
@@ -1004,6 +1007,7 @@ namespace MyFriendsAround.WP7.ViewModel
                 {
                     DispatcherHelper.CheckBeginInvokeOnUI(() =>
                     {
+                        IsBusy = false;
                         var message = new DialogMessage(
                             "Communication error!", DialogMessageCallback)
                         {
