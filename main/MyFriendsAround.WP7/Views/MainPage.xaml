@@ -74,7 +74,11 @@
         <i:EventTrigger EventName="Loaded">
             <cmd:EventToCommand Command="{Binding MainLoadCommand}" />
         </i:EventTrigger>
+        <i:EventTrigger EventName="BackKeyPress">
+            <cmd:EventToCommand Command="{Binding BackKeyPressCommand}" PassEventArgsToCommand="True" />
+        </i:EventTrigger>
     </i:Interaction.Triggers>
+    
 
     <Grid x:Name="LayoutRoot"
           Background="Transparent">
@@ -252,6 +256,31 @@
 
         </Grid>
 
+
+        <Preview:BindableApplicationBar x:Name="AppBar"
+                                        BarOpacity="0.8">
+            <Preview:BindableApplicationBarIconButton Command="{Binding ShowMyLocationCommand}"
+                                                      IconUri="/icons/appbar.location.png"
+                                                      Text="{Binding AppBarTextMyLocation}" />
+            <Preview:BindableApplicationBarIconButton Command="{Binding RefreshFriendsCommand}"
+                                                      IconUri="/icons/appbar.sync.rest.png"
+                                                      Text="{Binding AppBarTextRefresh}"
+                                                      IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertValueConverter1}}" />
+            <Preview:BindableApplicationBarIconButton Command="{Binding PublishLocationCommand}"
+                                                      IconUri="/icons/appbar.publish.png"
+                                                      Text="{Binding AppBarTextPublish}"
+                                                      IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertValueConverter1}}" />
+            <Preview:BindableApplicationBarIconButton Command="{Binding NavigateToSettingsCommand}"
+                                                      IconUri="/icons/appbar.feature.settings.rest.png"
+                                                      Text="{Binding AppBarTextSettings}" />
+
+            <Preview:BindableApplicationBar.MenuItems>
+                <Preview:BindableApplicationBarMenuItem  Text="{Binding AppBarTextAbout}"
+                                                         Command="{Binding ShowAboutCommand}" />
+            </Preview:BindableApplicationBar.MenuItems>
+        </Preview:BindableApplicationBar>
+        
+        
         <Grid Background="Transparent"
               VerticalAlignment="Stretch"
               Grid.RowSpan="2"
@@ -320,28 +349,7 @@
             </StackPanel>
         </Grid>
 
-        <Preview:BindableApplicationBar x:Name="AppBar"
-                                        BarOpacity="0.8">
-            <Preview:BindableApplicationBarIconButton Command="{Binding ShowMyLocationCommand}"
-                                                      IconUri="/icons/appbar.location.png"
-                                                      Text="{Binding AppBarTextMyLocation}" />
-            <Preview:BindableApplicationBarIconButton Command="{Binding RefreshFriendsCommand}"
-                                                      IconUri="/icons/appbar.sync.rest.png"
-                                                      Text="{Binding AppBarTextRefresh}"
-                                                      IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertValueConverter1}}" />
-            <Preview:BindableApplicationBarIconButton Command="{Binding PublishLocationCommand}"
-                                                      IconUri="/icons/appbar.publish.png"
-                                                      Text="{Binding AppBarTextPublish}"
-                                                      IsEnabled="{Binding Path=IsBusy, Converter={StaticResource InvertValueConverter1}}" />
-            <Preview:BindableApplicationBarIconButton Command="{Binding NavigateToSettingsCommand}"
-                                                      IconUri="/icons/appbar.feature.settings.rest.png"
-                                                      Text="{Binding AppBarTextSettings}" />
-
-            <Preview:BindableApplicationBar.MenuItems>
-                <Preview:BindableApplicationBarMenuItem  Text="{Binding AppBarTextAbout}"
-                                                         Command="{Binding ShowAboutCommand}" />
-            </Preview:BindableApplicationBar.MenuItems>
-        </Preview:BindableApplicationBar>
+        
     </Grid>
 
 </phone:PhoneApplicationPage>

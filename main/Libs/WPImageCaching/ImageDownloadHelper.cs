@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.IO.IsolatedStorage;
 using System.IO;
 using System.Windows.Media.Imaging;
+using System.Diagnostics;
 
 namespace WPImageCaching
 {
@@ -35,7 +36,7 @@ namespace WPImageCaching
 
             //Erstellen der Abfrage
             var wc = (HttpWebRequest)HttpWebRequest.Create(url);
-            if (item.ImageID!=null)
+            if (item.ImageID != null)
             {
                 //Prüfen, ob das Bild im Web immer noch aktuell ist
                 wc.Headers["If-None-Match"] = item.ImageID;
@@ -62,53 +63,103 @@ namespace WPImageCaching
                 //Bild wurde nicht geändert seit dem letzten Aufruf
                 if (response.StatusCode == HttpStatusCode.NotModified)
                 {
-                    Deployment.Current.Dispatcher.BeginInvoke(() => transfer.Image.SetSource(IsolatedStorageFile.GetUserStoreForApplication().OpenFile(transfer.Item.LocalFilename, FileMode.Open)));
+                    Deployment.Current.Dispatcher.BeginInvoke(() =>
+                                                                  {
+                                                                      using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication())
+                                                                      {
+                                                                          lock (ImageCache._lock)
+                                                                          {
+                                                                              using (IsolatedStorageFileStream fs =isf.OpenFile(transfer.Item.LocalFilename,FileMode.Open))
+                                                                              {
+                                                                                  transfer.Image.SetSource(fs);
+                                                                              }
+                                                                          }
+                                                                      }
+                                                                  });
                     return;
                 }
-                //Hat das Bild eine neue ID?
-                if (response.Headers["ETag"] != null)
+                lock (ImageCache._lock)
                 {
-                    transfer.Item.ImageID = response.Headers["ETag"];
-                }
-                else
-                {
-                    transfer.Item.ImageID = null;
-                }
-                //Gibt es ein Ablaufdatum?
-                if (response.Headers["Expires"] != null)
-                {
-                    transfer.Item.Expiration = DateTime.Parse(response.Headers["Expires"]);
-                }
-                else
-                {
-                    transfer.Item.Expiration = DateTime.Now.AddDays(EXPIRATIONDAYS);
-                }
-
-                var responseStream = response.GetResponseStream();
-
-                //Schreiben der Bilddatei
-                using (var bw = new BinaryWriter(IsolatedStorageFile.GetUserStoreForApplication().CreateFile(transfer.Item.LocalFilename)))
-                {
-                    byte[] b = new byte[4096];
-                    int read = 0;
-                    while ((read = responseStream.Read(b, 0, b.Length)) > 0)
+                    string newKey = transfer.WebRequest.RequestUri.ToString();
+                    if (ImageCache.imageCache.ContainsKey(newKey))
                     {
-                        bw.Write(b, 0, read);
+                        //Setzen des Bildes
+                        Deployment.Current.Dispatcher.BeginInvoke(
+                            () =>
+                            {
+                                using (IsolatedStorageFile ifs = IsolatedStorageFile.GetUserStoreForApplication())
+                                {
+                                    using (IsolatedStorageFileStream fs = ifs.OpenFile(transfer.Item.LocalFilename, FileMode.Open))
+                                    {
+                                        transfer.Image.SetSource(fs);
+                                    }
+                                }
+                            });
+                        return;
                     }
-                    bw.Flush();
-                    bw.Close();
+                    //Hat das Bild eine neue ID?
+                    if (response.Headers["ETag"] != null)
+                    {
+                        transfer.Item.ImageID = response.Headers["ETag"];
+                    }
+                    else
+                    {
+                        transfer.Item.ImageID = null;
+                    }
+                    //Gibt es ein Ablaufdatum?
+                    if (response.Headers["Expires"] != null)
+                    {
+                        transfer.Item.Expiration = DateTime.Parse(response.Headers["Expires"]);
+                    }
+                    else
+                    {
+                        transfer.Item.Expiration = DateTime.Now.AddDays(EXPIRATIONDAYS);
+                    }
+
+                    var responseStream = response.GetResponseStream();
+
+                    //Schreiben der Bilddatei
+                    using ( var bw = new BinaryWriter( IsolatedStorageFile.GetUserStoreForApplication().CreateFile(transfer.Item.LocalFilename)) )
+                    {
+                        byte[] b = new byte[4096];
+                        int read = 0;
+                        while ((read = responseStream.Read(b, 0, b.Length)) > 0)
+                        {
+                            bw.Write(b, 0, read);
+                        }
+                        bw.Flush();
+                        bw.Close();
+                    }
+                    //Setzen des Bildes
+                    Deployment.Current.Dispatcher.BeginInvoke(
+                        () =>
+                            {
+                                using (IsolatedStorageFile ifs = IsolatedStorageFile.GetUserStoreForApplication())
+                                {
+                                    using (IsolatedStorageFileStream fs = ifs.OpenFile( transfer.Item.LocalFilename,FileMode.Open))
+                                    {
+                                        transfer.Image.SetSource(fs);
+                                    }
+                                }
+                            });
+                    //Hinzufügen der Bildinformationen
+                    if (!ImageCache.imageCache.ContainsKey(newKey))
+                    {
+                        ImageCache.imageCache.Add(newKey, transfer.Item);
+                        //Speichern der Bildinformationen
+                        ImageCache.SaveCachedImageInfo();
+                    }
                 }
-                //Setzen des Bildes
-                Deployment.Current.Dispatcher.BeginInvoke(() => transfer.Image.SetSource(IsolatedStorageFile.GetUserStoreForApplication().OpenFile(transfer.Item.LocalFilename, FileMode.Open)));
-                //Hinzufügen der Bildinformationen
-                ImageCache.imageCache.Add(transfer.WebRequest.RequestUri.ToString(), transfer.Item);
-                //Speichern der Bildinformationen
-                ImageCache.SaveCachedImageInfo();
             }
-            catch
+            catch (WebException webException)
+            {
+            }
+            catch (Exception ex)
             {
                 //Nichts machen, da Bild nicht heruntergeladen werden konnte
+                Debug.WriteLine(ex.ToString());
             }
+
         }
 
         //Erstellt einen eindeutigen Namen für das zu ladende Bild
@@ -118,7 +169,7 @@ namespace WPImageCaching
             byte[] textToHash = Encoding.UTF8.GetBytes(url);
             SHA1Managed sa = new SHA1Managed();
             byte[] hash = sa.ComputeHash(textToHash);
-            return BitConverter.ToString(hash)+extension;
+            return BitConverter.ToString(hash) + extension;
         }
     }
     //Hilfsklasse für den asynchronen Aufruf

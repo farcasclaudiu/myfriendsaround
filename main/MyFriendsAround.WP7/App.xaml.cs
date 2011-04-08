@@ -52,13 +52,14 @@ namespace MyFriendsAround.WP7
 
             //register ViewModelLocator
             Container.Instance.RegisterInstance(typeof(ViewModelLocator), "ViewModelLocator");
-            Container.Instance.RegisterInstance<ILocationService>( new LocationService(), "LocationService");
+            Container.Instance.RegisterInstance<ILocationService>(new LocationService(), "LocationService");
         }
 
 
         public static ILocationService LocationService
         {
-            get {
+            get
+            {
                 return Container.Instance.Resolve<ILocationService>("LocationService");
             }
         }
@@ -137,12 +138,7 @@ namespace MyFriendsAround.WP7
         void RootFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
         {
             //LittleWatson.ReportException(e.Exception, string.Empty);
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                {
-                    var exception = new ExceptionPrompt();
-                    exception.Show(e.Exception);
-                }
-            );
+            ShowException(e.Exception);
 
             if (System.Diagnostics.Debugger.IsAttached)
             {
@@ -155,13 +151,7 @@ namespace MyFriendsAround.WP7
         private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
             //LittleWatson.ReportException(e.ExceptionObject, string.Empty);
-
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                {
-                    var exception = new ExceptionPrompt();
-                    exception.Show(e.ExceptionObject);
-                }
-            );
+            ShowException(e.ExceptionObject);
 
             if (System.Diagnostics.Debugger.IsAttached)
             {
@@ -172,6 +162,16 @@ namespace MyFriendsAround.WP7
             e.Handled = true;
         }
 
+        private void ShowException(Exception ex)
+        {
+            DispatcherHelper.CheckBeginInvokeOnUI(() =>
+            {
+                Container.Instance.Resolve<ViewModelLocator>("ViewModelLocator").Main.IsBusy = false;
+                var exception = new ExceptionPrompt();
+                exception.Show(ex);
+            }
+            );
+        }
 
         #region Phone application initialization
 

@@ -23,6 +23,10 @@ namespace WPImageCaching
             {
                 return ImageCache.GetImage((BitmapImage)value);    
             }
+            if (value is string && !string.IsNullOrEmpty(value as string))
+            {
+                return ImageCache.GetImage((string)value);
+            }
             else
             {
                 return value;
