@@ -102,6 +102,9 @@
     <Reference Include="ICSharpCode.SharpZipLib.WindowsPhone">
       <HintPath>..\Libs\Hammock-Binaries\.NET 4.0\Windows Phone 7\ICSharpCode.SharpZipLib.WindowsPhone.dll</HintPath>
     </Reference>
+    <Reference Include="IsolatedStorageExplorer, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\Libs\WP7 Isolated Storage Explorer\Library\IsolatedStorageExplorer.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp">
       <HintPath>..\packages\Hammock.1.2.1\lib\sl4\Microsoft.CSharp.dll</HintPath>
     </Reference>

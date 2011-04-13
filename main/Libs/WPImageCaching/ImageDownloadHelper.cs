@@ -59,10 +59,17 @@ namespace WPImageCaching
             try
             {
                 var response = (HttpWebResponse)transfer.WebRequest.EndGetResponse(result);
+                string newKey = transfer.WebRequest.RequestUri.ToString();
 
                 //Bild wurde nicht geändert seit dem letzten Aufruf
                 if (response.StatusCode == HttpStatusCode.NotModified)
                 {
+                    if (ImageCache.imageCache.ContainsKey(newKey))
+                    {
+                        ImageCache.imageCache[newKey].Expiration = (response.Headers["Expires"] != null) ? DateTime.Parse(response.Headers["Expires"]) : DateTime.Now.AddDays(EXPIRATIONDAYS);
+                        //save updated
+                        ImageCache.SaveCachedImageInfo();
+                    }
                     Deployment.Current.Dispatcher.BeginInvoke(() =>
                                                                   {
                                                                       using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication())
@@ -80,22 +87,40 @@ namespace WPImageCaching
                 }
                 lock (ImageCache._lock)
                 {
-                    string newKey = transfer.WebRequest.RequestUri.ToString();
                     if (ImageCache.imageCache.ContainsKey(newKey))
                     {
-                        //Setzen des Bildes
-                        Deployment.Current.Dispatcher.BeginInvoke(
-                            () =>
-                            {
-                                using (IsolatedStorageFile ifs = IsolatedStorageFile.GetUserStoreForApplication())
-                                {
-                                    using (IsolatedStorageFileStream fs = ifs.OpenFile(transfer.Item.LocalFilename, FileMode.Open))
+                        bool isExpired = (DateTime.Compare(DateTime.Now, ImageCache.imageCache[newKey].Expiration) >= 0);
+                        if (!isExpired)
+                        {
+                            //Setzen des Bildes
+                            Deployment.Current.Dispatcher.BeginInvoke(
+                                () =>
                                     {
-                                        transfer.Image.SetSource(fs);
-                                    }
-                                }
-                            });
-                        return;
+                                        using (
+                                            IsolatedStorageFile ifs = IsolatedStorageFile.GetUserStoreForApplication())
+                                        {
+                                            using (
+                                                IsolatedStorageFileStream fs = ifs.OpenFile(
+                                                    transfer.Item.LocalFilename, FileMode.Open))
+                                            {
+                                                transfer.Image.SetSource(fs);
+                                            }
+                                        }
+                                    });
+                            return;
+                        }
+                        else
+                        {
+                            if (IsolatedStorageFile.GetUserStoreForApplication().FileExists(ImageCache.imageCache[newKey].LocalFilename))
+                            {
+                                //remove old image
+                                IsolatedStorageFile.GetUserStoreForApplication().DeleteFile(ImageCache.imageCache[newKey].LocalFilename);
+                                //
+                                ImageCache.imageCache.Remove(newKey);
+                                //Speichern der Bildinformationen
+                                ImageCache.SaveCachedImageInfo();
+                            }
+                        }
                     }
                     //Hat das Bild eine neue ID?
                     if (response.Headers["ETag"] != null)
