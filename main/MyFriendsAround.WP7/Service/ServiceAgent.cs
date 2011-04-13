@@ -52,7 +52,7 @@ namespace MyFriendsAround.WP7.Service
             }
             catch (Exception ex)
             {
-                friendscallback.Invoke(null, new FriendsListEventArgs() { Friends = null, Error = ex });
+                friendscallback.Invoke(null, new FriendsListEventArgs() { Friends = null, Error = new WebException("Communication Error!", ex) });
             }
             
         }
@@ -66,7 +66,7 @@ namespace MyFriendsAround.WP7.Service
             }
             else
             {
-                friendscallback.Invoke(null, new FriendsListEventArgs() { Friends = null, Error = new Exception("Communication Error!") });
+                friendscallback.Invoke(null, new FriendsListEventArgs() { Friends = null, Error = new WebException("Communication Error!") });
             }
         }
 
@@ -102,7 +102,7 @@ namespace MyFriendsAround.WP7.Service
             }
             catch (Exception ex)
             {
-                publishlocationcallback.Invoke(null, new PublishLocationEventArgs() { IsSuccess = false, Error = ex });
+                publishlocationcallback.Invoke(null, new PublishLocationEventArgs() { IsSuccess = false, Error = new WebException("Communication Error!", ex) });
             }
             
         }
@@ -116,7 +116,7 @@ namespace MyFriendsAround.WP7.Service
             }
             else
             {
-                publishlocationcallback.Invoke(null, new PublishLocationEventArgs() { IsSuccess = false, Error = new Exception("Communication Error!")});
+                publishlocationcallback.Invoke(null, new PublishLocationEventArgs() { IsSuccess = false, Error = new WebException("Communication Error!") });
             }
         }
 
@@ -155,7 +155,7 @@ namespace MyFriendsAround.WP7.Service
             }
             catch (Exception ex)
             {
-                publishmypicturecallback.Invoke(null, new PublishLocationEventArgs() { IsSuccess = false, Error = ex });
+                publishmypicturecallback.Invoke(null, new PublishLocationEventArgs() { IsSuccess = false, Error = new WebException("Communication Error!", ex) });
             }
 
         }
@@ -169,7 +169,7 @@ namespace MyFriendsAround.WP7.Service
             }
             else
             {
-                publishmypicturecallback.Invoke(null, new PublishLocationEventArgs() { IsSuccess = false, Error = new Exception("Communication Error!") });
+                publishmypicturecallback.Invoke(null, new PublishLocationEventArgs() { IsSuccess = false, Error = new WebException("Communication Error!") });
             }
         }
 

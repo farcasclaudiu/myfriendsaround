@@ -677,28 +677,33 @@ namespace MyFriendsAround.WP7.ViewModel
             if (e.Location != Location.Unknown)
             {
                 GpsLocation = e.Location;
-
-                if (LastBoundRect != null && LastBoundRect.Intersects(new LocationRect(
-                    new GeoCoordinate(GpsLocation.Latitude, GpsLocation.Longitude),
-                    .5,
-                    .5)))
-                {
-                    ObservableCollection<PushPinModel> _mynewlocation = new ObservableCollection<PushPinModel>();
-                    _mynewlocation.Add(new PushPinModel()
-                    {
-                        Location = new GeoCoordinate(GpsLocation.Latitude, GpsLocation.Longitude),
-                        PinUserName = "Me"
-                    });
-                    MyLocationPushPins = _mynewlocation;
-                }
-                else
-                {
-                    MyLocationPushPins = new ObservableCollection<PushPinModel>();
-                }
+                RefreshMyLocationPushPins();
             }
 
             System.Diagnostics.Debug.WriteLine("watcher_PositionChanged + " + DateTime.Now.Second);
         }
+
+        public void RefreshMyLocationPushPins()
+        {
+            if (LastBoundRect != null && LastBoundRect.Intersects(new LocationRect(
+                    new GeoCoordinate(GpsLocation.Latitude, GpsLocation.Longitude),
+                    .5,
+                    .5)))
+            {
+                ObservableCollection<PushPinModel> _mynewlocation = new ObservableCollection<PushPinModel>();
+                _mynewlocation.Add(new PushPinModel()
+                {
+                    Location = new GeoCoordinate(GpsLocation.Latitude, GpsLocation.Longitude),
+                    PinUserName = "Me"
+                });
+                MyLocationPushPins = _mynewlocation;
+            }
+            else
+            {
+                MyLocationPushPins = new ObservableCollection<PushPinModel>();
+            }
+        }
+
 
         private void ShowMyLocation()
         {
@@ -936,8 +941,15 @@ namespace MyFriendsAround.WP7.ViewModel
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                     {
                         IsBusy = false;
-                        var exception = new ExceptionPrompt();
-                        exception.Show(args.Error);
+                        if (args.Error is WebException)
+                        {
+                            MessageBox.Show(args.Error.Message);
+                        }
+                        else
+                        {
+                            var exception = new ExceptionPrompt();
+                            exception.Show(args.Error);
+                        }
                     }
                 );
             }
@@ -950,8 +962,15 @@ namespace MyFriendsAround.WP7.ViewModel
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
                     IsBusy = false;
-                    var exception = new ExceptionPrompt();
-                    exception.Show(args.Error);
+                    if (args.Error is WebException)
+                    {
+                        MessageBox.Show(args.Error.Message);   
+                    }
+                    else
+                    {
+                        var exception = new ExceptionPrompt();
+                        exception.Show(args.Error);    
+                    }
                 });
             }
             else
@@ -997,8 +1016,15 @@ namespace MyFriendsAround.WP7.ViewModel
                 DispatcherHelper.CheckBeginInvokeOnUI(() =>
                 {
                     IsBusy = false;
-                    var exception = new ExceptionPrompt();
-                    exception.Show(args.Error);
+                    if (args.Error is WebException)
+                    {
+                        MessageBox.Show(args.Error.Message);
+                    }
+                    else
+                    {
+                        var exception = new ExceptionPrompt();
+                        exception.Show(args.Error);
+                    }
                 });
             }
             else

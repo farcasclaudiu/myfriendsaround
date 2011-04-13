@@ -16,6 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Phone;
 using Microsoft.Phone.Controls;
+using Microsoft.Phone.Net.NetworkInformation;
 using Microsoft.Phone.Shell;
 using MyFriendsAround.WP7.Model;
 using MyFriendsAround.WP7.ViewModel;
@@ -53,6 +54,21 @@ namespace MyFriendsAround.WP7
             //register ViewModelLocator
             Container.Instance.RegisterInstance(typeof(ViewModelLocator), "ViewModelLocator");
             Container.Instance.RegisterInstance<ILocationService>(new LocationService(), "LocationService");
+
+            NetworkDetector.Instance.OnNetworkOFF += new EventHandler<NetworkAvailableEventArgs>(Instance_OnNetworkOFF);
+            NetworkDetector.Instance.OnNetworkON += new EventHandler<NetworkAvailableEventArgs>(Instance_OnNetworkON);
+        }
+
+        void Instance_OnNetworkON(object sender, NetworkAvailableEventArgs e)
+        {
+            ViewModelLocator locator = Container.Instance.Resolve<ViewModelLocator>("ViewModelLocator");
+            locator.Main.IsBusy = true;
+        }
+
+        void Instance_OnNetworkOFF(object sender, NetworkAvailableEventArgs e)
+        {
+            ViewModelLocator locator = Container.Instance.Resolve<ViewModelLocator>("ViewModelLocator");
+            locator.Main.IsBusy = false;
         }
 
 
@@ -68,6 +84,9 @@ namespace MyFriendsAround.WP7
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
+#if GPS_EMULATOR
+            IsolatedStorageExplorer.Explorer.Start("localhost");
+#endif
             DispatcherHelper.Initialize();
             LoadModel();
         }
@@ -76,6 +95,9 @@ namespace MyFriendsAround.WP7
         // This code will not execute when the application is first launched
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
+#if GPS_EMULATOR
+            IsolatedStorageExplorer.Explorer.RestoreFromTombstone();
+#endif
             DispatcherHelper.Initialize();
             LoadModel();
         }
@@ -104,15 +126,16 @@ namespace MyFriendsAround.WP7
             MainViewModel mainModel = this.RetrieveFromIsolatedStorage<MainViewModel>();
             if (mainModel != null)
             {
-                mainModel.IsBusy = false;
-                mainModel.GpsLocation = Location.Unknown;
-                mainModel.GpsStatus = GeoPositionStatus.NoData;
                 Container.Instance.RegisterInstance<MainViewModel>(mainModel, Constants.VM_MAIN);
             }
             else
             {
                 Container.Instance.RegisterInstance<MainViewModel>(new MainViewModel(), Constants.VM_MAIN);
             }
+            Container.Instance.Resolve<ViewModelLocator>("ViewModelLocator").Main.GpsLocation = Location.Unknown;
+            Container.Instance.Resolve<ViewModelLocator>("ViewModelLocator").Main.GpsStatus = GeoPositionStatus.NoData;
+            Container.Instance.Resolve<ViewModelLocator>("ViewModelLocator").Main.RefreshMyLocationPushPins();
+            Container.Instance.Resolve<ViewModelLocator>("ViewModelLocator").Main.IsBusy = false; //(NetworkDetector.Instance.GetCurrentNetworkType() == NetworkInterfaceType.None) || !NetworkDetector.Instance.GetZuneStatus();
             //
             SettingsViewModel settingsModel = this.RetrieveFromIsolatedStorage<SettingsViewModel>();
             if (settingsModel != null)
@@ -138,7 +161,14 @@ namespace MyFriendsAround.WP7
         void RootFrame_NavigationFailed(object sender, NavigationFailedEventArgs e)
         {
             //LittleWatson.ReportException(e.Exception, string.Empty);
-            ShowException(e.Exception);
+            if (e.Exception is WebException)
+            {
+                MessageBox.Show(e.Exception.Message);
+            }
+            else
+            {
+                ShowException(e.Exception);
+            }
 
             if (System.Diagnostics.Debugger.IsAttached)
             {
@@ -150,8 +180,20 @@ namespace MyFriendsAround.WP7
         // Code to execute on Unhandled Exceptions
         private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
+            #region Error Logging
+            
             //LittleWatson.ReportException(e.ExceptionObject, string.Empty);
-            ShowException(e.ExceptionObject);
+            if (e.ExceptionObject is WebException)
+            {
+                MessageBox.Show(e.ExceptionObject.Message);
+            }
+            else
+            {
+                ShowException(e.ExceptionObject);
+            }
+
+            #endregion
+
 
             if (System.Diagnostics.Debugger.IsAttached)
             {
