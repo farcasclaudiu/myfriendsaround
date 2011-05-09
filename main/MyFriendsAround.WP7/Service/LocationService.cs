@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using Microsoft.Devices;
 using MyFriendsAround.WP7.Model;
 using System.Device.Location;
 
@@ -24,14 +25,18 @@ namespace MyFriendsAround.WP7.Service
 
         public LocationService()
         {
-#if GPS_EMULATOR
-            _gpsWatcher = new GpsEmulatorClient.GeoCoordinateWatcher();
-#else
-            _gpsWatcher = new GeoCoordinateWatcher(GeoPositionAccuracy.High)
+            if (Microsoft.Devices.Environment.DeviceType == DeviceType.Emulator)
+            {
+                _gpsWatcher = new GpsEmulatorClient.GeoCoordinateWatcher();
+            }
+            else
+            {
+                _gpsWatcher = new GeoCoordinateWatcher(GeoPositionAccuracy.High)
                               {
                                   MovementThreshold = 10
                               };
-#endif
+            }
+            
             _gpsWatcher.PositionChanged += new EventHandler<GeoPositionChangedEventArgs<GeoCoordinate>>(watcher_PositionChanged);
             _gpsWatcher.StatusChanged += new EventHandler<GeoPositionStatusChangedEventArgs>(watcher_StatusChanged);
         }

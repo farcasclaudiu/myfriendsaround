@@ -67,7 +67,7 @@ namespace MyFriendsAround.Data.BLL
                     locateFriend.FriendName = friend.FriendName;
                     locateFriend.FriendImageUrl = friend.FriendImageUrl;
                     locateFriend.LastUpdated = friend.LastUpdated;
-                    locateFriend.LocationStr = friend.LocationStr;
+                    locateFriend.LocationStr = string.Format("POINT({0} {1})", friend.Latitude, friend.Longitude);
 
                     ctx.ObjectStateManager.ChangeObjectState(locateFriend, System.Data.EntityState.Modified);
                 }

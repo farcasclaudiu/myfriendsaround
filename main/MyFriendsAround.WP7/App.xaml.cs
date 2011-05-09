@@ -14,6 +14,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Devices;
 using Microsoft.Phone;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Net.NetworkInformation;
@@ -84,9 +85,11 @@ namespace MyFriendsAround.WP7
         // This code will not execute when the application is reactivated
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
-#if GPS_EMULATOR
-            IsolatedStorageExplorer.Explorer.Start("localhost");
-#endif
+            if (Microsoft.Devices.Environment.DeviceType == DeviceType.Emulator)
+            {
+                IsolatedStorageExplorer.Explorer.Start("localhost");
+            }
+
             DispatcherHelper.Initialize();
             LoadModel();
         }
@@ -95,9 +98,11 @@ namespace MyFriendsAround.WP7
         // This code will not execute when the application is first launched
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
-#if GPS_EMULATOR
-            IsolatedStorageExplorer.Explorer.RestoreFromTombstone();
-#endif
+            if (Microsoft.Devices.Environment.DeviceType == DeviceType.Emulator)
+            {
+                IsolatedStorageExplorer.Explorer.RestoreFromTombstone();
+            }
+
             DispatcherHelper.Initialize();
             LoadModel();
         }
