@@ -1,9 +1,4 @@
-﻿/////////////////////////////////////////////////////////////////////////////////////////
-// define GPS EMULATOR when working with Windows Phone GPS Emulator to simulate location 
-#define GPS_EMULATOR
-////////////////////////////////////////////////////////////////////////////////////////
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -14,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using Microsoft.Devices;
 using Microsoft.Phone.Controls;
 using GpsEmulatorClient;
 using System.Device.Location;
@@ -34,11 +30,14 @@ namespace GpsEmulatorPhoneTestClient
         {
             InitializeComponent();
 
-#if GPS_EMULATOR
-            _Watcher = new GpsEmulatorClient.GeoCoordinateWatcher();
-#else
-            _Watcher = new System.Device.Location.GeoCoordinateWatcher();
-#endif
+            if (Microsoft.Devices.Environment.DeviceType == DeviceType.Emulator)
+            {
+                _Watcher = new GpsEmulatorClient.GeoCoordinateWatcher();
+            }
+            else
+            {
+                _Watcher = new System.Device.Location.GeoCoordinateWatcher();
+            }
 
             _Watcher.PositionChanged += new EventHandler<GeoPositionChangedEventArgs<GeoCoordinate>>(watcher_PositionChanged);
             _Watcher.StatusChanged += new EventHandler<GeoPositionStatusChangedEventArgs>(watcher_StatusChanged);

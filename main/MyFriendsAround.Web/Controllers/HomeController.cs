@@ -46,13 +46,16 @@ namespace MyFriendsAround.Web.Controllers
 
             FriendsRepository.GetFriends().ForEach(f =>
             {
+                string imageUrl = string.Format("https://myfriendsaround.blob.core.windows.net/profiles/profile_{0}.jpg", f.Id);
                 Marker marker = new Marker
-                {
-                    html = f.FriendName,
-                    lat = f.Latitude.ToString(),
-                    lng = f.Longitude.ToString(),
-                    label = f.FriendName
-                };
+                                    {
+                                        html = f.FriendName,
+                                        icon = imageUrl,
+                                        lat = f.Latitude.ToString(),
+                                        lng = f.Longitude.ToString(),
+                                        label = f.FriendName,
+                                        lastUpdated = f.LastUpdated.ToString()
+                                    };
                 list.markers.Add(marker);
             });
 

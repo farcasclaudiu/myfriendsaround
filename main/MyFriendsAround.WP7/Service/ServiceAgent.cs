@@ -4,6 +4,7 @@ using System.Net;
 using System.Text;
 using Hammock;
 using Hammock.Web;
+using Microsoft.Devices;
 using MyFriendsAround.Common.Entities;
 
 namespace MyFriendsAround.WP7.Service
@@ -16,14 +17,16 @@ namespace MyFriendsAround.WP7.Service
 
         static ServiceAgent()
         {
-#if GPS_EMULATOR
-            baseUrl = "http://127.0.0.1:80/myfriends";//running in local azure emulator
-            //baseUrl = "http://localhost.:55672/myfriends";//for local asp.net mvc use 
-#else
-            baseUrl = "http://myfriendsaround.cloudapp.net/myfriends";//live azure
-            //baseUrl = "http://localhost:80/myfriends";
-#endif      
-            
+            if (Microsoft.Devices.Environment.DeviceType == DeviceType.Emulator)
+            {
+                baseUrl = "http://127.0.0.1:80/myfriends"; //running in local azure emulator
+                //baseUrl = "http://localhost.:55672/myfriends";//for local asp.net mvc use 
+            }
+            else
+            {
+                baseUrl = "http://myfriendsaround.cloudapp.net/myfriends"; //live azure
+                //baseUrl = "http://localhost:80/myfriends";
+            }
         }
 
         #region GetFriends
