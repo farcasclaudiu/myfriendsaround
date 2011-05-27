@@ -24,6 +24,7 @@ using Hammock.Serialization;
 using Microsoft.Phone;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Controls.Maps;
+using Microsoft.Phone.Reactive;
 using Microsoft.Silverlight.Testing;
 using MyFriendsAround.Common.Entities;
 using MyFriendsAround.WP7.Service;
@@ -117,6 +118,9 @@ namespace MyFriendsAround.WP7.ViewModel
 
 
         #region Properties & Fields
+
+        private IDisposable rxGpsLocation;
+        private IDisposable rxGpsStatus;
 
         private LocationRect LastBoundRect = null;
 
@@ -227,7 +231,7 @@ namespace MyFriendsAround.WP7.ViewModel
                 }
                 _SelectedFriend = value;
 
-                if (_SelectedFriend != null && _SelectedFriend.Location!=GeoCoordinate.Unknown)
+                if (_SelectedFriend != null && _SelectedFriend.Location != GeoCoordinate.Unknown)
                     MapCenter = _SelectedFriend.Location;
 
                 // Update bindings, no broadcast
@@ -309,9 +313,8 @@ namespace MyFriendsAround.WP7.ViewModel
                 pushPin.PinDistance =
                     (GpsLocation != Location.Unknown)
                         ? Haversine.Distance(
-                            new Position()
-                                {Latitude = pushPin.Location.Latitude, Longitude = pushPin.Location.Longitude},
-                            new Position() {Latitude = GpsLocation.Latitude, Longitude = GpsLocation.Longitude},
+                            new Position() { Latitude = pushPin.Location.Latitude, Longitude = pushPin.Location.Longitude },
+                            new Position() { Latitude = GpsLocation.Latitude, Longitude = GpsLocation.Longitude },
                             DistanceType.Kilometers)
                         : 0;
             }
@@ -662,26 +665,29 @@ namespace MyFriendsAround.WP7.ViewModel
 
         private void InitGps()
         {
-            App.LocationService.LocationChanged += LocationService_LocationChanged;
-            App.LocationService.StatusChanged += LocationService_StatusChanged;
+            var geoLocationObs = Observable.FromEvent<LocationChangedEventArgs>(App.LocationService, "LocationChanged").Select(r => r.EventArgs.Location);
+            rxGpsLocation = geoLocationObs.Subscribe(res =>
+                {
+                    if (res != Location.Unknown)
+                    {
+                        GpsLocation = res;
+                        RefreshMyLocationPushPins();
+                    }
+
+                    System.Diagnostics.Debug.WriteLine(
+                        "watcher_PositionChanged + " + res.ToString());
+                });
+
+            var geoStatusObs = Observable.FromEvent<LocationStatusEventArgs>(App.LocationService, "StatusChanged").Select(r => r.EventArgs.Status);
+            rxGpsStatus = geoStatusObs.Subscribe(res =>
+                {
+                    GpsStatus = res;
+                });
+
+
             App.LocationService.Start();
         }
 
-        private void LocationService_StatusChanged(object sender, LocationStatusEventArgs e)
-        {
-            GpsStatus = e.Status;
-        }
-
-        private void LocationService_LocationChanged(object sender, LocationChangedEventArgs e)
-        {
-            if (e.Location != Location.Unknown)
-            {
-                GpsLocation = e.Location;
-                RefreshMyLocationPushPins();
-            }
-
-            System.Diagnostics.Debug.WriteLine("watcher_PositionChanged + " + DateTime.Now.Second);
-        }
 
         public void RefreshMyLocationPushPins()
         {
@@ -893,12 +899,11 @@ namespace MyFriendsAround.WP7.ViewModel
                                    PinDistance =
                                        (GpsLocation != Location.Unknown)
                                            ? Haversine.Distance(
-                                               new Position() {Latitude = f.Latitude, Longitude = f.Longitude},
-                                               new Position()
-                                                   {Latitude = GpsLocation.Latitude, Longitude = GpsLocation.Longitude},
+                                               new Position() { Latitude = f.Latitude, Longitude = f.Longitude },
+                                               new Position() { Latitude = GpsLocation.Latitude, Longitude = GpsLocation.Longitude },
                                                DistanceType.Kilometers)
                                            : 0
-                });
+                               });
             });
             PushPins = result;
             if (result.Count > 0)
@@ -964,12 +969,12 @@ namespace MyFriendsAround.WP7.ViewModel
                     IsBusy = false;
                     if (args.Error is WebException)
                     {
-                        MessageBox.Show(args.Error.Message);   
+                        MessageBox.Show(args.Error.Message);
                     }
                     else
                     {
                         var exception = new ExceptionPrompt();
-                        exception.Show(args.Error);    
+                        exception.Show(args.Error);
                     }
                 });
             }
@@ -1067,6 +1072,10 @@ namespace MyFriendsAround.WP7.ViewModel
         public override void Cleanup()
         {
             // Clean up if needed
+            if (rxGpsLocation != null)
+                rxGpsLocation.Dispose();
+            if (rxGpsStatus != null)
+                rxGpsStatus.Dispose();
 
             base.Cleanup();
             App.LocationService.Stop();
